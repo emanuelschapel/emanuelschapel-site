@@ -1,0 +1,87 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Lato:wght@300;400;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    font-family: 'Lato', sans-serif;
+    color: #141414; /* ink */
+    background-color: #FCFAF9; /* ivory */
+  }
+  h1, h2, h3 {
+    font-family: 'Playfair Display', Georgia, serif;
+  }
+  h4, h5, h6 {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-pink hover:bg-pink-deep text-ink font-body font-bold px-8 py-3 rounded-sm transition-all duration-300 tracking-widest text-sm uppercase inline-block;
+  }
+  .btn-secondary {
+    @apply border-2 border-white text-white hover:bg-white hover:text-ink font-body font-bold px-8 py-3 rounded-sm transition-all duration-300 tracking-widest text-sm uppercase inline-block;
+  }
+  .btn-outline {
+    @apply border-2 border-ink text-ink hover:bg-ink hover:text-white font-body font-bold px-8 py-3 rounded-sm transition-all duration-300 tracking-widest text-sm uppercase inline-block;
+  }
+  .btn-ink {
+    @apply bg-ink hover:bg-ink-soft text-white font-body font-bold px-8 py-3 rounded-sm transition-all duration-300 tracking-widest text-sm uppercase inline-block;
+  }
+  .section-title {
+    @apply font-display text-3xl md:text-4xl text-ink leading-tight;
+  }
+  .section-subtitle {
+    @apply font-heading text-lg md:text-xl text-muted font-light italic;
+  }
+  .form-input {
+    @apply w-full border border-gray-200 bg-white px-4 py-3 font-body text-ink rounded-sm focus:outline-none focus:border-ink focus:ring-2 focus:ring-pink transition-colors;
+  }
+  .form-label {
+    @apply block text-sm font-body font-bold text-ink mb-1 tracking-wide;
+  }
+  .card-hover {
+    @apply transition-all duration-300 hover:shadow-xl hover:-translate-y-1;
+  }
+  .ornament {
+    @apply text-ink text-2xl leading-none;
+  }
+}
+
+/* Decorative rule */
+.brand-rule {
+  height: 2px;
+  background: linear-gradient(to right, transparent, #FDA8BF, transparent);
+}
+
+/* Fade-in animation */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.fade-up {
+  animation: fadeUp 0.7s ease-out forwards;
+}
+.fade-up-delay-1 { animation-delay: 0.15s; }
+.fade-up-delay-2 { animation-delay: 0.3s; }
+.fade-up-delay-3 { animation-delay: 0.45s; }
+
+/* Mobile call bar */
+.mobile-call-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+}
+
+/* Hero overlay — white copy sits on this, so it stays dark */
+.hero-overlay {
+  background: linear-gradient(135deg, rgba(20,20,20,0.90) 0%, rgba(20,20,20,0.66) 55%, rgba(42,38,40,0.45) 100%);
+}
