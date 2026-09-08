@@ -1,5 +1,5 @@
-import { Link } from 'react-router-dom';
 import PageHero from '../components/sections/PageHero';
+import { Button } from '../components/ui/Button';
 import CTASection from '../components/sections/CTASection';
 
 // Staff data — titles only; names not invented. Client to provide verified titles for production.
@@ -12,15 +12,16 @@ const staffMembers = [
 ];
 
 /**
- * Featured funeral director.
- * TODO (client): confirm the full name, preferred title, and any credentials Mr. Jones
- * wants stated (licence, years in service, affiliations). The copy below is written to
- * the brief — dedication to the profession and to Chicagoland families — and deliberately
- * asserts no verifiable facts that have not been supplied.
+ * Owner profile.
+ * TODO (client): confirm any credentials Emanuel Jones wants stated — licence, years in
+ * service, professional affiliations, and whether he founded the chapel or acquired it.
+ * The copy below is written to the brief (dedication to the profession and to Chicagoland
+ * families) and deliberately asserts no fact that has not been supplied. If he would like a
+ * signed pull-quote here, send his words — I will not put sentences in his mouth.
  */
-const director = {
-  name: 'Mr. Jones',
-  title: 'Funeral Director',
+const owner = {
+  name: 'Emanuel Jones',
+  title: 'Owner & Funeral Director',
   image: '/staff_funeral_director_headshot_01.jpg',
 };
 
@@ -104,49 +105,83 @@ export default function About() {
         </div>
       </section>
 
-      {/* Featured Funeral Director — ink surface so the profile reads as a feature,
-          not another band, between Mission & Values (blush) and Our Team (white). */}
-      <section className="bg-ink py-20 px-6" aria-labelledby="director-heading">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-[minmax(0,22rem)_minmax(0,1fr)] gap-10 lg:gap-16 items-center">
-          <div className="mx-auto w-full max-w-xs lg:max-w-none">
-            <img
-              src={director.image}
-              alt={`${director.name}, ${director.title} at Emanuel's Chapel`}
-              className="w-full aspect-[4/5] object-cover object-top rounded-sm shadow-lg"
-              loading="lazy"
-              decoding="async"
-            />
+      {/* Owner profile — the anchor of the page: offset frame, ambient warmth, and an
+          asymmetric 5/7 split so it reads as a considered portrait rather than a photo
+          parked beside a paragraph. */}
+      <section className="relative bg-ink overflow-hidden py-20 lg:py-28 px-6" aria-labelledby="owner-heading">
+        <div
+          className="pointer-events-none absolute inset-0 opacity-[0.09]"
+          style={{ backgroundImage: 'radial-gradient(circle at 24% 45%, #FDA8BF 0%, transparent 62%)' }}
+          aria-hidden="true"
+        />
+
+        <div className="relative max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-14 lg:gap-16 items-center">
+          {/* Portrait, held inside an offset pink rule */}
+          <div className="lg:col-span-5">
+            <div className="relative mx-auto w-full max-w-sm lg:max-w-none">
+              <div
+                className="absolute -inset-3 sm:-inset-4 border border-pink/45 rounded-sm"
+                aria-hidden="true"
+              />
+              <img
+                src={owner.image}
+                alt={`${owner.name}, ${owner.title} at Emanuel's Chapel`}
+                className="relative w-full aspect-[4/5] object-cover object-top rounded-sm shadow-[0_18px_50px_rgba(0,0,0,0.45)]"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
           </div>
 
-          <div>
-            <div className="flex items-center gap-3 mb-5">
+          {/* Profile */}
+          <div className="lg:col-span-7">
+            <div className="flex items-center gap-3 mb-6">
               <div className="h-px w-8 bg-pink" />
               <span className="text-pink text-xs tracking-[0.4em] font-body uppercase">
-                Meet Our Funeral Director
+                Meet the Owner
               </span>
             </div>
 
-            <h2 id="director-heading" className="font-display text-3xl md:text-4xl text-white leading-tight mb-2">
-              {director.name}
+            <h2
+              id="owner-heading"
+              className="font-display text-4xl md:text-5xl text-white leading-[1.1] mb-4"
+            >
+              {owner.name}
             </h2>
-            <p className="font-heading text-pink text-lg italic mb-6">{director.title}</p>
 
-            <p className="font-body text-white/75 leading-relaxed mb-5">
-              For Mr. Jones, funeral service is less a profession he chose than a calling he
-              answered. His work rests on a simple conviction: that every family who walks
-              through our doors deserves patience, honesty, and unhurried attention — whatever
-              the hour, whatever the circumstance.
-            </p>
-            <p className="font-body text-white/75 leading-relaxed mb-5">
-              That commitment shows in the details. He guides families personally through the
-              decisions that follow a loss, explains every option plainly, and never presses for
-              more than a family needs. For households across the Chicagoland area, he has been
-              the steady presence in the room on the hardest day of their lives.
-            </p>
-            <p className="font-body text-white/75 leading-relaxed">
-              His dedication extends past any single service — to the funeral profession itself,
-              and to the South Side community Emanuel's Chapel is proud to call home.
-            </p>
+            <div className="flex items-center gap-4 mb-8">
+              <span className="font-heading text-pink text-xl italic">{owner.title}</span>
+              <span className="h-px flex-1 bg-white/15" />
+              <span className="text-pink text-base leading-none" aria-hidden="true">&#10022;</span>
+            </div>
+
+            <div className="space-y-5 max-w-[62ch]">
+              <p className="font-body text-white/80 text-[15.5px] leading-[1.75]">
+                For Emanuel Jones, funeral service is less a profession he chose than a calling he
+                answered. He leads Emanuel&rsquo;s Chapel by a simple conviction: that every family
+                who walks through these doors deserves patience, honesty, and unhurried attention
+                &mdash; whatever the hour, whatever the circumstance.
+              </p>
+              <p className="font-body text-white/80 text-[15.5px] leading-[1.75]">
+                That commitment shows in the details. He guides families personally through the
+                decisions that follow a loss, explains every option plainly, and never presses for
+                more than a family needs. For households across the Chicagoland area, he has been
+                the steady presence in the room on the hardest day of their lives.
+              </p>
+              <p className="font-body text-white/80 text-[15.5px] leading-[1.75]">
+                His dedication extends past any single service &mdash; to the funeral profession
+                itself, and to the South Side community Emanuel&rsquo;s Chapel is proud to call home.
+              </p>
+            </div>
+
+            <div className="mt-10 flex flex-wrap items-center gap-4">
+              <Button variant="accent" to="/contact">
+                Speak with Emanuel&rsquo;s Chapel
+              </Button>
+              <Button variant="outline" tone="light" to="/services">
+                Our services
+              </Button>
+            </div>
           </div>
         </div>
       </section>

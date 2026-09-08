@@ -1,4 +1,4 @@
-import { Info, Phone } from 'lucide-react';
+import { Info } from 'lucide-react';
 import PageHero from '../components/sections/PageHero';
 import PricingRequestForm from '../components/forms/PricingRequestForm';
 import CTASection from '../components/sections/CTASection';

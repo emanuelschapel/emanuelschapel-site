@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom';
 import PageHero from '../components/sections/PageHero';
-import ServiceCard from '../components/cards/ServiceCard';
 import CTASection from '../components/sections/CTASection';
 import { services } from '../data/services';
 
