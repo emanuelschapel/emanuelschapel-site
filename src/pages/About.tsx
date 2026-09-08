@@ -4,13 +4,25 @@ import CTASection from '../components/sections/CTASection';
 
 // Staff data — titles only; names not invented. Client to provide verified titles for production.
 const staffMembers = [
-  { id: 'fd-01', title: 'Funeral Director', image: '/staff_funeral_director_headshot_01.jpg', desc: 'Licensed funeral director with years of experience serving Chicago families with compassion and professionalism.' },
   { id: 'fd-02', title: 'Funeral Director', image: '/staff_funeral_director_headshot_02.jpg', desc: 'Dedicated to guiding families through every arrangement with patience, clarity, and deep respect.' },
   { id: 'om-01', title: 'Office Manager', image: '/staff_office_manager_headshot.jpg', desc: 'Coordinates the administrative and operational aspects of our services to ensure every detail is handled with care.' },
   { id: 'oa-01', title: 'Office Administrator', image: '/staff_office_administrator_headshot.jpg', desc: 'Provides compassionate administrative support to families from first contact through service completion.' },
   { id: 'el-01', title: 'Senior Staff Member', image: '/staff_elder_headshot.jpg', desc: 'A trusted and experienced member of our team who brings wisdom and community commitment to every service.' },
   { id: 'at-01', title: 'Funeral Attendant', image: '/staff_attendant_headshot_01.jpg', desc: 'Provides respectful, professional support throughout every service to honor the dignity of your loved one.' },
 ];
+
+/**
+ * Featured funeral director.
+ * TODO (client): confirm the full name, preferred title, and any credentials Mr. Jones
+ * wants stated (licence, years in service, affiliations). The copy below is written to
+ * the brief — dedication to the profession and to Chicagoland families — and deliberately
+ * asserts no verifiable facts that have not been supplied.
+ */
+const director = {
+  name: 'Mr. Jones',
+  title: 'Funeral Director',
+  image: '/staff_funeral_director_headshot_01.jpg',
+};
 
 const values = [
   { title: 'Dignity', desc: 'Every person deserves to be treated with the highest degree of professional care and respect.' },
@@ -88,6 +100,53 @@ export default function About() {
                 <p className="font-body text-sm text-muted leading-relaxed">{v.desc}</p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Featured Funeral Director — ink surface so the profile reads as a feature,
+          not another band, between Mission & Values (blush) and Our Team (white). */}
+      <section className="bg-ink py-20 px-6" aria-labelledby="director-heading">
+        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-[minmax(0,22rem)_minmax(0,1fr)] gap-10 lg:gap-16 items-center">
+          <div className="mx-auto w-full max-w-xs lg:max-w-none">
+            <img
+              src={director.image}
+              alt={`${director.name}, ${director.title} at Emanuel's Chapel`}
+              className="w-full aspect-[4/5] object-cover object-top rounded-sm shadow-lg"
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+
+          <div>
+            <div className="flex items-center gap-3 mb-5">
+              <div className="h-px w-8 bg-pink" />
+              <span className="text-pink text-xs tracking-[0.4em] font-body uppercase">
+                Meet Our Funeral Director
+              </span>
+            </div>
+
+            <h2 id="director-heading" className="font-display text-3xl md:text-4xl text-white leading-tight mb-2">
+              {director.name}
+            </h2>
+            <p className="font-heading text-pink text-lg italic mb-6">{director.title}</p>
+
+            <p className="font-body text-white/75 leading-relaxed mb-5">
+              For Mr. Jones, funeral service is less a profession he chose than a calling he
+              answered. His work rests on a simple conviction: that every family who walks
+              through our doors deserves patience, honesty, and unhurried attention — whatever
+              the hour, whatever the circumstance.
+            </p>
+            <p className="font-body text-white/75 leading-relaxed mb-5">
+              That commitment shows in the details. He guides families personally through the
+              decisions that follow a loss, explains every option plainly, and never presses for
+              more than a family needs. For households across the Chicagoland area, he has been
+              the steady presence in the room on the hardest day of their lives.
+            </p>
+            <p className="font-body text-white/75 leading-relaxed">
+              His dedication extends past any single service — to the funeral profession itself,
+              and to the South Side community Emanuel's Chapel is proud to call home.
+            </p>
           </div>
         </div>
       </section>

@@ -16,10 +16,16 @@ import { heroQuickLinks, site } from "../../data/site";
  *         a family in the first hour should never have to read text over a picture.
  *
  * IMAGE NOTE
- *  The current source photo is 4:3. On wide desktops the plinth will cover the tagline.
- *  When the 2:1 (2400×1200) recomposition arrives, swap the `lg` sources in <picture> and
- *  set `object-position` to `center 40%`; the plinth copy will clear the wordmark.
- *  Until then `desktopLayout="band"` renders the plinth as a solid band below the photo.
+ *  The source is a 1904×952 (exactly 2:1) extension of the original 1288×952 photograph.
+ *  The photograph sits sharp in the centre; 308px per side is a blurred, darkened
+ *  continuation of the room that fades toward ink, so the banner fills a wide viewport
+ *  with no pillarbox. 308/1904 is exactly what a 1.353 container crops away, so phones and
+ *  tablets (aspect-[1288/952]) land back on the ORIGINAL framing and never show the
+ *  extension — one asset serves every breakpoint.
+ *
+ *  Band mode stays the shipping default: the "A prepared service to prepare people" prayer
+ *  line is baked into the photo just above the counter, and the overlay plinth would cover
+ *  it. Only move to overlay with artwork that has clear space at the bottom.
  */
 interface HeroProps {
   /** "overlay" (chosen direction) or "band" (fallback while the 4:3 image is the only source) */
@@ -41,22 +47,22 @@ export function Hero({ desktopLayout = "overlay" }: HeroProps) {
       <div
         className={
           overlay
-            ? "relative aspect-[4/3] w-full lg:aspect-auto lg:h-[calc(100vh-7rem)] lg:min-h-[640px] lg:max-h-[960px]"
-            : "relative aspect-[4/3] w-full lg:aspect-[2/1] lg:max-h-[720px]"
+            ? "relative aspect-[1288/952] w-full lg:aspect-auto lg:h-[calc(100vh-7rem)] lg:min-h-[640px] lg:max-h-[960px]"
+            : "relative aspect-[1288/952] w-full lg:aspect-[2/1] lg:max-h-[78vh]"
         }
       >
         <picture>
           <source
             type="image/webp"
-            srcSet={`${img}-800.webp 800w, ${img}-1200.webp 1200w, ${img}-1600.webp 1600w`}
+            srcSet={`${img}-800.webp 800w, ${img}-1200.webp 1200w, ${img}-1904.webp 1904w`}
             sizes="100vw"
           />
           <img
             src={`${img}-1200.jpg`}
-            srcSet={`${img}-800.jpg 800w, ${img}-1200.jpg 1200w, ${img}-1600.jpg 1600w`}
+            srcSet={`${img}-800.jpg 800w, ${img}-1200.jpg 1200w, ${img}-1904.jpg 1904w`}
             sizes="100vw"
             alt="Reception wall at Emanuel's Chapel with the wreath monogram, calla lilies, and candlelight"
-            className="absolute inset-0 h-full w-full object-cover object-[center_42%] lg:object-[center_40%]"
+            className="absolute inset-0 h-full w-full object-cover object-center"
             fetchPriority="high"
             decoding="async"
           />

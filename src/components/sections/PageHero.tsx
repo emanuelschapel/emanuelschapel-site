@@ -2,15 +2,44 @@ interface PageHeroProps {
   title: string;
   subtitle?: string;
   imageSrc?: string;
+  /**
+   * CSS object-position for the crop, e.g. "center 35%" to favour the upper third.
+   * Default centres the photo. Tune per page when the subject sits off-centre.
+   */
+  focal?: string;
   isUrgent?: boolean;
 }
 
-export default function PageHero({ title, subtitle, imageSrc = '/hero_exterior_fleet_staff_wide.jpg', isUrgent = false }: PageHeroProps) {
+/**
+ * Full-bleed page banner.
+ *
+ * HEIGHT — the height is driven by viewport WIDTH (38vw), not height. The previous
+ * `min-h-[42vh]` held height constant while width grew, so the container ratio drifted
+ * from ~1:1 on a phone to ~3.8:1 on a laptop and `object-cover` zoomed in hard to
+ * compensate (roughly 64% of a 4:3 photo cropped away at 1440px). Tying height to width
+ * keeps the crop close to constant from ~1024px up, and the clamp stops it running away
+ * on ultrawide displays. `min-h` rather than `h` so a long title can still push it taller
+ * on narrow screens instead of overflowing.
+ */
+export default function PageHero({
+  title,
+  subtitle,
+  imageSrc = '/hero_exterior_fleet_staff_wide.jpg',
+  focal = 'center',
+  isUrgent = false,
+}: PageHeroProps) {
   return (
-    <section className="relative min-h-[42vh] flex items-end">
-      <div
-        className="absolute inset-0 bg-cover bg-center"
-        style={{ backgroundImage: `url('${imageSrc}')` }}
+    <section className="relative flex items-end overflow-hidden min-h-[clamp(380px,38vw,540px)]">
+      {/* Decorative: the <h1> below carries the meaning, so this is alt="". A real <img>
+          rather than a CSS background so the preload scanner finds the LCP image early. */}
+      <img
+        src={imageSrc}
+        alt=""
+        aria-hidden="true"
+        className="absolute inset-0 h-full w-full object-cover"
+        style={{ objectPosition: focal }}
+        fetchPriority="high"
+        decoding="async"
       />
       <div className={`absolute inset-0 ${isUrgent ? 'bg-ink/90' : 'hero-overlay'}`} />
       {/* Guarantees the white copy clears 4.5:1 even over the photo's blown-out highlights. */}

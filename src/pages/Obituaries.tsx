@@ -10,7 +10,7 @@ export default function Obituaries() {
       <PageHero
         title="Obituaries & Tribute Notices"
         subtitle="Honoring the lives and legacies of those we have had the privilege to serve."
-        imageSrc="/services_flowers_and_hearse.jpg"
+        imageSrc="/fleet_black_hearse_side_street.jpg"
       />
 
       {/* Phase 2 note banner */}

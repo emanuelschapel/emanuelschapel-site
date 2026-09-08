@@ -95,17 +95,6 @@ export default function Contact() {
           </div>
         </div>
       </section>
-
-      {/* Facility photo */}
-      <section className="px-6 pb-16 bg-white">
-        <div className="max-w-5xl mx-auto">
-          <img
-            src="/facility_side_exterior_building.jpg"
-            alt="Emanuel's Chapel Funeral Home building"
-            className="w-full h-64 object-cover rounded-sm shadow-md"
-          />
-        </div>
-      </section>
     </main>
   );
 }
