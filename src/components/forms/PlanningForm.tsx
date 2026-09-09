@@ -1,11 +1,32 @@
 import { useState } from 'react';
 import { CheckCircle } from 'lucide-react';
 import { PHONE } from '../../data/navigation';
+import { validateForm, focusFirstError, inputProps, type Errors, type FormSpec } from '../../lib/formValidation';
+import FieldError from './FieldError';
+
+const SPEC: FormSpec = {
+  name:  { id: 'pf-name',  label: 'Full name',     rules: ['required'] },
+  phone: { id: 'pf-phone', label: 'Phone number',  rules: ['required', 'phone'] },
+  email: { id: 'pf-email', label: 'Email address', rules: ['required', 'email'] },
+};
 
 export default function PlanningForm() {
   const [submitted, setSubmitted] = useState(false);
+  const [errors, setErrors] = useState<Errors>({});
   const [form, setForm] = useState({ name:'', phone:'', email:'', contactMethod:'phone', interest:'', message:'' });
-  const set = (f:string) => (e:React.ChangeEvent<HTMLInputElement|HTMLTextAreaElement|HTMLSelectElement>) => setForm(p=>({...p,[f]:e.target.value}));
+  const set = (f:string) => (e:React.ChangeEvent<HTMLInputElement|HTMLTextAreaElement|HTMLSelectElement>) => { setForm(p=>({...p,[f]:e.target.value})); setErrors(p => (p[f] ? { ...p, [f]: '' } : p)); }
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const found = validateForm(form, SPEC);
+    setErrors(found);
+    if (Object.keys(found).length > 0) {
+      focusFirstError(found, SPEC);
+      return;
+    }
+    // FUTURE: POST `form` to the form endpoint. Nothing is sent yet.
+    setSubmitted(true);
+  };
 
   if (submitted) return (
     <div className="bg-blush border border-rule rounded-sm p-10 text-center">
@@ -16,20 +37,23 @@ export default function PlanningForm() {
   );
 
   return (
-    <form onSubmit={e=>{e.preventDefault();setSubmitted(true);}} className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-6" noValidate>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <label htmlFor="pf-name" className="form-label">Full Name <span className="text-ink">*</span></label>
-          <input id="pf-name" type="text" required value={form.name} onChange={set('name')} className="form-input" placeholder="Your name" />
+          <label htmlFor="pf-name" className="form-label">Full Name <span className="text-danger">*</span></label>
+          <input id="pf-name" type="text" required value={form.name} onChange={set('name')} {...inputProps('pf-name', errors.name)} placeholder="Your name" />
+          <FieldError fieldId="pf-name" message={errors.name} />
         </div>
         <div>
-          <label htmlFor="pf-phone" className="form-label">Phone Number <span className="text-ink">*</span></label>
-          <input id="pf-phone" type="tel" required value={form.phone} onChange={set('phone')} className="form-input" placeholder="(000) 000-0000" />
+          <label htmlFor="pf-phone" className="form-label">Phone Number <span className="text-danger">*</span></label>
+          <input id="pf-phone" type="tel" required value={form.phone} onChange={set('phone')} {...inputProps('pf-phone', errors.phone)} placeholder="(000) 000-0000" />
+          <FieldError fieldId="pf-phone" message={errors.phone} />
         </div>
       </div>
       <div>
-        <label htmlFor="pf-email" className="form-label">Email Address</label>
-        <input id="pf-email" type="email" value={form.email} onChange={set('email')} className="form-input" placeholder="your@email.com" />
+        <label htmlFor="pf-email" className="form-label">Email Address <span className="text-danger">*</span></label>
+        <input id="pf-email" type="email" required value={form.email} onChange={set('email')} {...inputProps('pf-email', errors.email)} placeholder="your@email.com" />
+        <FieldError fieldId="pf-email" message={errors.email} />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
@@ -54,6 +78,7 @@ export default function PlanningForm() {
         <label htmlFor="pf-message" className="form-label">Your Questions or Notes</label>
         <textarea id="pf-message" rows={4} value={form.message} onChange={set('message')} className="form-input resize-none" placeholder="Share any questions or thoughts..." />
       </div>
+      <p className="font-body text-xs text-muted"><span className="text-danger">*</span> Required</p>
       <button type="submit" className="btn-primary w-full text-center">Request Consultation</button>
     </form>
   );

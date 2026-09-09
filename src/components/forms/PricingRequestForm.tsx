@@ -1,11 +1,32 @@
 import { useState } from 'react';
 import { CheckCircle } from 'lucide-react';
 import { PHONE } from '../../data/navigation';
+import { validateForm, focusFirstError, inputProps, type Errors, type FormSpec } from '../../lib/formValidation';
+import FieldError from './FieldError';
+
+const SPEC: FormSpec = {
+  name:  { id: 'pr-name',  label: 'Full name',     rules: ['required'] },
+  phone: { id: 'pr-phone', label: 'Phone number',  rules: ['required', 'phone'] },
+  email: { id: 'pr-email', label: 'Email address', rules: ['required', 'email'] },
+};
 
 export default function PricingRequestForm() {
   const [submitted, setSubmitted] = useState(false);
+  const [errors, setErrors] = useState<Errors>({});
   const [form, setForm] = useState({ name:'', phone:'', email:'', interest:'', wantGPL:'yes', message:'' });
-  const set = (f:string) => (e:React.ChangeEvent<HTMLInputElement|HTMLTextAreaElement|HTMLSelectElement>) => setForm(p=>({...p,[f]:e.target.value}));
+  const set = (f:string) => (e:React.ChangeEvent<HTMLInputElement|HTMLTextAreaElement|HTMLSelectElement>) => { setForm(p=>({...p,[f]:e.target.value})); setErrors(p => (p[f] ? { ...p, [f]: '' } : p)); }
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const found = validateForm(form, SPEC);
+    setErrors(found);
+    if (Object.keys(found).length > 0) {
+      focusFirstError(found, SPEC);
+      return;
+    }
+    // FUTURE: POST `form` to the form endpoint. Nothing is sent yet.
+    setSubmitted(true);
+  };
 
   if (submitted) return (
     <div className="bg-blush border border-rule rounded-sm p-10 text-center">
@@ -16,20 +37,23 @@ export default function PricingRequestForm() {
   );
 
   return (
-    <form onSubmit={e=>{e.preventDefault();setSubmitted(true);}} className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-6" noValidate>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <label htmlFor="pr-name" className="form-label">Full Name <span className="text-ink">*</span></label>
-          <input id="pr-name" type="text" required value={form.name} onChange={set('name')} className="form-input" />
+          <label htmlFor="pr-name" className="form-label">Full Name <span className="text-danger">*</span></label>
+          <input id="pr-name" type="text" required value={form.name} onChange={set('name')} {...inputProps('pr-name', errors.name)} />
+          <FieldError fieldId="pr-name" message={errors.name} />
         </div>
         <div>
-          <label htmlFor="pr-phone" className="form-label">Phone Number <span className="text-ink">*</span></label>
-          <input id="pr-phone" type="tel" required value={form.phone} onChange={set('phone')} className="form-input" placeholder="(000) 000-0000" />
+          <label htmlFor="pr-phone" className="form-label">Phone Number <span className="text-danger">*</span></label>
+          <input id="pr-phone" type="tel" required value={form.phone} onChange={set('phone')} {...inputProps('pr-phone', errors.phone)} placeholder="(000) 000-0000" />
+          <FieldError fieldId="pr-phone" message={errors.phone} />
         </div>
       </div>
       <div>
-        <label htmlFor="pr-email" className="form-label">Email Address</label>
-        <input id="pr-email" type="email" value={form.email} onChange={set('email')} className="form-input" />
+        <label htmlFor="pr-email" className="form-label">Email Address <span className="text-danger">*</span></label>
+        <input id="pr-email" type="email" required value={form.email} onChange={set('email')} {...inputProps('pr-email', errors.email)} />
+        <FieldError fieldId="pr-email" message={errors.email} />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
@@ -55,6 +79,7 @@ export default function PricingRequestForm() {
         <label htmlFor="pr-message" className="form-label">Questions or Notes</label>
         <textarea id="pr-message" rows={4} value={form.message} onChange={set('message')} className="form-input resize-none" placeholder="What questions can we help answer?" />
       </div>
+      <p className="font-body text-xs text-muted"><span className="text-danger">*</span> Required</p>
       <button type="submit" className="btn-primary w-full text-center">Request Pricing Information</button>
     </form>
   );

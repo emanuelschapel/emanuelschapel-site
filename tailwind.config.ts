@@ -27,6 +27,9 @@ const config: Config = {
         ivory: "#FCFAF9", // page background
         muted: "#5C5559", // secondary text (4.5:1+ on ivory/blush)
         rule: "#EBD8DE", // borders and dividers
+        // Form errors. 6.6:1 on white — serious rather than alarming, and never the sole
+        // signal: errors always carry text and an icon too.
+        danger: "#B3261E",
       },
       fontFamily: {
         display: ['"Playfair Display"', "Georgia", "serif"],

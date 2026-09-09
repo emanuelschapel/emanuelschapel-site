@@ -3,20 +3,46 @@ import { CheckCircle } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
 import { PHONE } from '../../data/navigation';
 import { CONTACT_REASONS, toContactReason } from '../../data/contactReasons';
+import { validateForm, focusFirstError, inputProps, type Errors, type FormSpec } from '../../lib/formValidation';
+import FieldError from './FieldError';
+
+const SPEC: FormSpec = {
+  name:    { id: 'cf-name',    label: 'Full name',     rules: ['required'] },
+  phone:   { id: 'cf-phone',   label: 'Phone number',  rules: ['required', 'phone'] },
+  email:   { id: 'cf-email',   label: 'Email address', rules: ['required', 'email'] },
+  message: { id: 'cf-message', label: 'Your message',  rules: ['required'] },
+};
 
 export default function ContactForm() {
   const [submitted, setSubmitted] = useState(false);
-  const [form, setForm] = useState({ name:'', phone:'', email:'', message:'' });
-  const set = (f:string) => (e:React.ChangeEvent<HTMLInputElement|HTMLTextAreaElement>) => setForm(p=>({...p,[f]:e.target.value}));
+  const [form, setForm] = useState({ name: '', phone: '', email: '', message: '' });
+  const [errors, setErrors] = useState<Errors>({});
+
+  // Clearing the error as soon as the field is corrected, rather than making them submit again.
+  const set = (f: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setForm(p => ({ ...p, [f]: e.target.value }));
+    setErrors(p => (p[f] ? { ...p, [f]: '' } : p));
+  };
 
   // Reason is derived from the URL rather than copied into state, so arriving at a new
   // ?reason= updates the field without an effect. Once the visitor picks one themselves,
   // their choice wins for the rest of the visit.
   const [params] = useSearchParams();
-  const fromUrl = params.get('reason');
-  const prefilled = toContactReason(fromUrl);
+  const prefilled = toContactReason(params.get('reason'));
   const [chosenReason, setChosenReason] = useState<string | null>(null);
   const reason = chosenReason ?? prefilled;
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const found = validateForm(form, SPEC);
+    setErrors(found);
+    if (Object.keys(found).length > 0) {
+      focusFirstError(found, SPEC);
+      return;
+    }
+    // FUTURE: POST { ...form, reason } to the form endpoint. Nothing is sent yet.
+    setSubmitted(true);
+  };
 
   if (submitted) return (
     <div className="bg-blush border border-rule rounded-sm p-10 text-center">
@@ -27,29 +53,27 @@ export default function ContactForm() {
   );
 
   return (
-    <form onSubmit={e=>{e.preventDefault();setSubmitted(true);}} className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-6" noValidate>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <label htmlFor="cf-name" className="form-label">Full Name <span className="text-ink">*</span></label>
-          <input id="cf-name" type="text" required value={form.name} onChange={set('name')} className="form-input" />
+          <label htmlFor="cf-name" className="form-label">Full Name <span className="text-danger">*</span></label>
+          <input id="cf-name" type="text" required value={form.name} onChange={set('name')} {...inputProps('cf-name', errors.name)} />
+          <FieldError fieldId="cf-name" message={errors.name} />
         </div>
         <div>
-          <label htmlFor="cf-phone" className="form-label">Phone Number</label>
-          <input id="cf-phone" type="tel" value={form.phone} onChange={set('phone')} className="form-input" placeholder="(000) 000-0000" />
+          <label htmlFor="cf-phone" className="form-label">Phone Number <span className="text-danger">*</span></label>
+          <input id="cf-phone" type="tel" required value={form.phone} onChange={set('phone')} placeholder="(000) 000-0000" {...inputProps('cf-phone', errors.phone)} />
+          <FieldError fieldId="cf-phone" message={errors.phone} />
         </div>
       </div>
       <div>
-        <label htmlFor="cf-email" className="form-label">Email Address <span className="text-ink">*</span></label>
-        <input id="cf-email" type="email" required value={form.email} onChange={set('email')} className="form-input" />
+        <label htmlFor="cf-email" className="form-label">Email Address <span className="text-danger">*</span></label>
+        <input id="cf-email" type="email" required value={form.email} onChange={set('email')} placeholder="your@email.com" {...inputProps('cf-email', errors.email)} />
+        <FieldError fieldId="cf-email" message={errors.email} />
       </div>
       <div>
         <label htmlFor="cf-reason" className="form-label">Reason for Contacting</label>
-        <select
-          id="cf-reason"
-          value={reason}
-          onChange={e => setChosenReason(e.target.value)}
-          className="form-input"
-        >
+        <select id="cf-reason" value={reason} onChange={e => setChosenReason(e.target.value)} className="form-input">
           <option value="">Please select</option>
           {CONTACT_REASONS.map(r => (
             <option key={r.value} value={r.value}>{r.label}</option>
@@ -57,9 +81,11 @@ export default function ContactForm() {
         </select>
       </div>
       <div>
-        <label htmlFor="cf-message" className="form-label">Your Message <span className="text-ink">*</span></label>
-        <textarea id="cf-message" rows={5} required value={form.message} onChange={set('message')} className="form-input resize-none" placeholder="How can we help you?" />
+        <label htmlFor="cf-message" className="form-label">Your Message <span className="text-danger">*</span></label>
+        <textarea id="cf-message" rows={5} required value={form.message} onChange={set('message')} placeholder="How can we help you?" {...inputProps('cf-message', errors.message)} />
+        <FieldError fieldId="cf-message" message={errors.message} />
       </div>
+      <p className="font-body text-xs text-muted"><span className="text-danger">*</span> Required</p>
       <button type="submit" className="btn-primary w-full text-center">Send Message</button>
     </form>
   );
