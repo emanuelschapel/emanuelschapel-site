@@ -5,6 +5,11 @@ import { PHONE } from '../../data/navigation';
 import { CONTACT_REASONS, toContactReason } from '../../data/contactReasons';
 import { validateForm, focusFirstError, inputProps, type Errors, type FormSpec } from '../../lib/formValidation';
 import FieldError from './FieldError';
+import FormStatus from './FormStatus';
+import Honeypot from './Honeypot';
+import { submitForm, type SubmitStatus } from '../../lib/formSubmission';
+
+const SUBJECT = "New contact message — emanuelschapel.org";
 
 const SPEC: FormSpec = {
   name:    { id: 'cf-name',    label: 'Full name',     rules: ['required'] },
@@ -17,6 +22,8 @@ export default function ContactForm() {
   const [submitted, setSubmitted] = useState(false);
   const [form, setForm] = useState({ name: '', phone: '', email: '', message: '' });
   const [errors, setErrors] = useState<Errors>({});
+  const [status, setStatus] = useState<SubmitStatus>('idle');
+  const [sendError, setSendError] = useState<string>();
 
   // Clearing the error as soon as the field is corrected, rather than making them submit again.
   const set = (f: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -32,7 +39,7 @@ export default function ContactForm() {
   const [chosenReason, setChosenReason] = useState<string | null>(null);
   const reason = chosenReason ?? prefilled;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const found = validateForm(form, SPEC);
     setErrors(found);
@@ -40,7 +47,15 @@ export default function ContactForm() {
       focusFirstError(found, SPEC);
       return;
     }
-    // FUTURE: POST { ...form, reason } to the form endpoint. Nothing is sent yet.
+    setStatus('sending');
+    setSendError(undefined);
+    const outcome = await submitForm('contact', { ...form, reason, _subject: SUBJECT });
+    if (!outcome.ok) {
+      setStatus('error');
+      setSendError(outcome.error);
+      return;
+    }
+    setStatus('idle');
     setSubmitted(true);
   };
 
@@ -54,6 +69,7 @@ export default function ContactForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6" noValidate>
+      <Honeypot />
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <label htmlFor="cf-name" className="form-label">Full Name <span className="text-danger">*</span></label>
@@ -85,8 +101,11 @@ export default function ContactForm() {
         <textarea id="cf-message" rows={5} required value={form.message} onChange={set('message')} placeholder="How can we help you?" {...inputProps('cf-message', errors.message)} />
         <FieldError fieldId="cf-message" message={errors.message} />
       </div>
+      <FormStatus error={sendError} />
       <p className="font-body text-xs text-muted"><span className="text-danger">*</span> Required</p>
-      <button type="submit" className="btn-primary w-full text-center">Send Message</button>
+      <button type="submit" disabled={status === 'sending'} className=" disabled:opacity-60 disabled:cursor-not-allowed">
+        {status === 'sending' ? 'Sending…' : 'Send Message'}
+      </button>
     </form>
   );
 }

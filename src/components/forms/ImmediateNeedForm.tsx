@@ -3,6 +3,11 @@ import { CheckCircle } from 'lucide-react';
 import { PHONE } from '../../data/navigation';
 import { validateForm, focusFirstError, inputProps, type Errors, type FormSpec } from '../../lib/formValidation';
 import FieldError from './FieldError';
+import FormStatus from './FormStatus';
+import Honeypot from './Honeypot';
+import { submitForm, type SubmitStatus } from '../../lib/formSubmission';
+
+const SUBJECT = "IMMEDIATE NEED request — emanuelschapel.org";
 
 const SPEC: FormSpec = {
   name:             { id: 'inf-name',            label: 'Your name',            rules: ['required'] },
@@ -15,12 +20,14 @@ const SPEC: FormSpec = {
 export default function ImmediateNeedForm() {
   const [submitted, setSubmitted] = useState(false);
   const [errors, setErrors] = useState<Errors>({});
+  const [status, setStatus] = useState<SubmitStatus>('idle');
+  const [sendError, setSendError] = useState<string>();
   const [form, setForm] = useState({
     name: '', phone: '', email: '', lovedOneName: '', lovedOneLocation: '',
     deathOccurred: '', serviceType: '', message: '',
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const found = validateForm(form, SPEC);
     setErrors(found);
@@ -28,7 +35,15 @@ export default function ImmediateNeedForm() {
       focusFirstError(found, SPEC);
       return;
     }
-    // FUTURE: POST `form` to the form endpoint. Nothing is sent yet.
+    setStatus('sending');
+    setSendError(undefined);
+    const outcome = await submitForm('immediate', { ...form, _subject: SUBJECT });
+    if (!outcome.ok) {
+      setStatus('error');
+      setSendError(outcome.error);
+      return;
+    }
+    setStatus('idle');
     setSubmitted(true);
   };
 
@@ -50,6 +65,7 @@ export default function ImmediateNeedForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6" noValidate>
+      <Honeypot />
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <label htmlFor="inf-name" className="form-label">Your Name <span className="text-danger">*</span></label>
@@ -104,9 +120,10 @@ export default function ImmediateNeedForm() {
         <label htmlFor="inf-message" className="form-label">Additional Information</label>
         <textarea id="inf-message" rows={4} value={form.message} onChange={set('message')} className="form-input resize-none" placeholder="Share anything that would help our team reach out to you..." />
       </div>
+      <FormStatus error={sendError} />
       <p className="font-body text-xs text-muted"><span className="text-danger">*</span> Required</p>
-      <button type="submit" className="btn-primary w-full text-center justify-center">
-        Submit Request
+      <button type="submit" disabled={status === 'sending'} className=" disabled:opacity-60 disabled:cursor-not-allowed">
+        {status === 'sending' ? 'Sending…' : 'Submit Request'}
       </button>
       <p className="font-body text-xs text-muted text-center">
         For urgent matters, please call <a href={`tel:${PHONE.replace(/\D/g,'')}`} className="text-ink font-bold">{PHONE}</a> immediately.

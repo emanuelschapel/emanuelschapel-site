@@ -14,16 +14,41 @@
 - Google Fonts: Playfair Display, Cormorant Garamond, Lato
 
 ## Brand Palette
-| Role | Color | Hex |
+Production tokens (Sept 2026). The prototype's fuchsia/plum palette is retired — see
+`tailwind.config.ts`. Rule that must survive every edit: **pink never carries white text**
+(`#FDA8BF` on white is 1.75:1; on `#141414` it is ~11:1).
+
+| Role | Token | Hex |
 |------|-------|-----|
-| Primary CTA / Brand Accent | Brand Fuchsia | `#C4008F` |
-| Hover / Highlight Accent | Bright Magenta | `#D9009F` |
-| Header / Footer Contrast | Deep Formal Plum | `#2B001F` |
-| Secondary Accent | Deep Plum | `#5E0044` |
-| Page Background | White | `#FFFFFF` |
-| Soft Section Background | Soft Blush | `#F9F3F7` |
-| Body Text | Charcoal Black | `#1A1A1A` |
-| Supporting Text | Medium Gray | `#6F6F6F` |
+| Primary text, CTA fill, dark surfaces | `ink` | `#141414` |
+| Ink hover | `ink-soft` | `#2A2628` |
+| Brand accent (always with ink text) | `pink` | `#FDA8BF` |
+| Accent hover | `pink-deep` | `#F98CA9` |
+| Light accent tint | `pink-wash` | `#FDE3EA` |
+| Section background | `blush` | `#FBEEF1` |
+| Page background | `ivory` | `#FCFAF9` |
+| Secondary text | `muted` | `#5C5559` |
+| Borders and dividers | `rule` | `#EBD8DE` |
+| Form errors | `danger` | `#B3261E` |
+
+## Form Submissions
+All four forms POST to [Formspree](https://formspree.io), one endpoint per form.
+
+1. Create four forms in the **client's** Formspree account — these submissions carry a
+   deceased person's name and location, so the client is the data controller.
+2. `cp .env.example .env` and paste each form id (the hash from `https://formspree.io/f/<hash>`).
+3. Set the notification recipient in the Formspree dashboard. It is **not** part of the id,
+   so changing it later needs no code change and no redeploy.
+
+If an id is missing the form shows a failure notice with the phone number rather than a
+false confirmation — a silently dropped death call is the worst outcome this code has.
+
+Validation lives in `src/lib/formValidation.ts`; every form runs `noValidate` and validates
+there, because native `required` treats a single space as a filled field.
+
+**FUTURE (SMS):** hang a Formspree webhook off the Immediate Need endpoint → serverless
+function → Twilio. No frontend change needed. Keep the deceased's name and location out of
+the SMS body — that lands unencrypted on a lock screen.
 
 ## Getting Started
 ```bash

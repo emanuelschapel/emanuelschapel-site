@@ -3,6 +3,11 @@ import { CheckCircle } from 'lucide-react';
 import { PHONE } from '../../data/navigation';
 import { validateForm, focusFirstError, inputProps, type Errors, type FormSpec } from '../../lib/formValidation';
 import FieldError from './FieldError';
+import FormStatus from './FormStatus';
+import Honeypot from './Honeypot';
+import { submitForm, type SubmitStatus } from '../../lib/formSubmission';
+
+const SUBJECT = "Pre-planning consultation request — emanuelschapel.org";
 
 const SPEC: FormSpec = {
   name:  { id: 'pf-name',  label: 'Full name',     rules: ['required'] },
@@ -13,10 +18,12 @@ const SPEC: FormSpec = {
 export default function PlanningForm() {
   const [submitted, setSubmitted] = useState(false);
   const [errors, setErrors] = useState<Errors>({});
+  const [status, setStatus] = useState<SubmitStatus>('idle');
+  const [sendError, setSendError] = useState<string>();
   const [form, setForm] = useState({ name:'', phone:'', email:'', contactMethod:'phone', interest:'', message:'' });
   const set = (f:string) => (e:React.ChangeEvent<HTMLInputElement|HTMLTextAreaElement|HTMLSelectElement>) => { setForm(p=>({...p,[f]:e.target.value})); setErrors(p => (p[f] ? { ...p, [f]: '' } : p)); }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const found = validateForm(form, SPEC);
     setErrors(found);
@@ -24,7 +31,15 @@ export default function PlanningForm() {
       focusFirstError(found, SPEC);
       return;
     }
-    // FUTURE: POST `form` to the form endpoint. Nothing is sent yet.
+    setStatus('sending');
+    setSendError(undefined);
+    const outcome = await submitForm('planning', { ...form, _subject: SUBJECT });
+    if (!outcome.ok) {
+      setStatus('error');
+      setSendError(outcome.error);
+      return;
+    }
+    setStatus('idle');
     setSubmitted(true);
   };
 
@@ -38,6 +53,7 @@ export default function PlanningForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6" noValidate>
+      <Honeypot />
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <label htmlFor="pf-name" className="form-label">Full Name <span className="text-danger">*</span></label>
@@ -78,8 +94,11 @@ export default function PlanningForm() {
         <label htmlFor="pf-message" className="form-label">Your Questions or Notes</label>
         <textarea id="pf-message" rows={4} value={form.message} onChange={set('message')} className="form-input resize-none" placeholder="Share any questions or thoughts..." />
       </div>
+      <FormStatus error={sendError} />
       <p className="font-body text-xs text-muted"><span className="text-danger">*</span> Required</p>
-      <button type="submit" className="btn-primary w-full text-center">Request Consultation</button>
+      <button type="submit" disabled={status === 'sending'} className=" disabled:opacity-60 disabled:cursor-not-allowed">
+        {status === 'sending' ? 'Sending…' : 'Request Consultation'}
+      </button>
     </form>
   );
 }

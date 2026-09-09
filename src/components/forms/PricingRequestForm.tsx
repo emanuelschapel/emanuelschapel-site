@@ -3,6 +3,11 @@ import { CheckCircle } from 'lucide-react';
 import { PHONE } from '../../data/navigation';
 import { validateForm, focusFirstError, inputProps, type Errors, type FormSpec } from '../../lib/formValidation';
 import FieldError from './FieldError';
+import FormStatus from './FormStatus';
+import Honeypot from './Honeypot';
+import { submitForm, type SubmitStatus } from '../../lib/formSubmission';
+
+const SUBJECT = "Pricing information request — emanuelschapel.org";
 
 const SPEC: FormSpec = {
   name:  { id: 'pr-name',  label: 'Full name',     rules: ['required'] },
@@ -13,10 +18,12 @@ const SPEC: FormSpec = {
 export default function PricingRequestForm() {
   const [submitted, setSubmitted] = useState(false);
   const [errors, setErrors] = useState<Errors>({});
+  const [status, setStatus] = useState<SubmitStatus>('idle');
+  const [sendError, setSendError] = useState<string>();
   const [form, setForm] = useState({ name:'', phone:'', email:'', interest:'', wantGPL:'yes', message:'' });
   const set = (f:string) => (e:React.ChangeEvent<HTMLInputElement|HTMLTextAreaElement|HTMLSelectElement>) => { setForm(p=>({...p,[f]:e.target.value})); setErrors(p => (p[f] ? { ...p, [f]: '' } : p)); }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const found = validateForm(form, SPEC);
     setErrors(found);
@@ -24,7 +31,15 @@ export default function PricingRequestForm() {
       focusFirstError(found, SPEC);
       return;
     }
-    // FUTURE: POST `form` to the form endpoint. Nothing is sent yet.
+    setStatus('sending');
+    setSendError(undefined);
+    const outcome = await submitForm('pricing', { ...form, _subject: SUBJECT });
+    if (!outcome.ok) {
+      setStatus('error');
+      setSendError(outcome.error);
+      return;
+    }
+    setStatus('idle');
     setSubmitted(true);
   };
 
@@ -38,6 +53,7 @@ export default function PricingRequestForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6" noValidate>
+      <Honeypot />
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <label htmlFor="pr-name" className="form-label">Full Name <span className="text-danger">*</span></label>
@@ -79,8 +95,11 @@ export default function PricingRequestForm() {
         <label htmlFor="pr-message" className="form-label">Questions or Notes</label>
         <textarea id="pr-message" rows={4} value={form.message} onChange={set('message')} className="form-input resize-none" placeholder="What questions can we help answer?" />
       </div>
+      <FormStatus error={sendError} />
       <p className="font-body text-xs text-muted"><span className="text-danger">*</span> Required</p>
-      <button type="submit" className="btn-primary w-full text-center">Request Pricing Information</button>
+      <button type="submit" disabled={status === 'sending'} className=" disabled:opacity-60 disabled:cursor-not-allowed">
+        {status === 'sending' ? 'Sending…' : 'Request Pricing Information'}
+      </button>
     </form>
   );
 }
