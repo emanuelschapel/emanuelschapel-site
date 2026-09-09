@@ -166,7 +166,7 @@ export default function Home() {
             <Link to="/planning-ahead" className="btn-primary text-center justify-center">
               Start Planning Today
             </Link>
-            <Link to="/contact" className="btn-secondary text-center justify-center">
+            <Link to="/contact?reason=preplanning" className="btn-secondary text-center justify-center">
               Schedule a Consultation
             </Link>
           </div>

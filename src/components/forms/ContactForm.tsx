@@ -1,11 +1,22 @@
 import { useState } from 'react';
 import { CheckCircle } from 'lucide-react';
+import { useSearchParams } from 'react-router-dom';
 import { PHONE } from '../../data/navigation';
+import { CONTACT_REASONS, toContactReason } from '../../data/contactReasons';
 
 export default function ContactForm() {
   const [submitted, setSubmitted] = useState(false);
-  const [form, setForm] = useState({ name:'', phone:'', email:'', reason:'', message:'' });
-  const set = (f:string) => (e:React.ChangeEvent<HTMLInputElement|HTMLTextAreaElement|HTMLSelectElement>) => setForm(p=>({...p,[f]:e.target.value}));
+  const [form, setForm] = useState({ name:'', phone:'', email:'', message:'' });
+  const set = (f:string) => (e:React.ChangeEvent<HTMLInputElement|HTMLTextAreaElement>) => setForm(p=>({...p,[f]:e.target.value}));
+
+  // Reason is derived from the URL rather than copied into state, so arriving at a new
+  // ?reason= updates the field without an effect. Once the visitor picks one themselves,
+  // their choice wins for the rest of the visit.
+  const [params] = useSearchParams();
+  const fromUrl = params.get('reason');
+  const prefilled = toContactReason(fromUrl);
+  const [chosenReason, setChosenReason] = useState<string | null>(null);
+  const reason = chosenReason ?? prefilled;
 
   if (submitted) return (
     <div className="bg-blush border border-rule rounded-sm p-10 text-center">
@@ -33,14 +44,16 @@ export default function ContactForm() {
       </div>
       <div>
         <label htmlFor="cf-reason" className="form-label">Reason for Contacting</label>
-        <select id="cf-reason" value={form.reason} onChange={set('reason')} className="form-input">
+        <select
+          id="cf-reason"
+          value={reason}
+          onChange={e => setChosenReason(e.target.value)}
+          className="form-input"
+        >
           <option value="">Please select</option>
-          <option value="immediate">Immediate Need</option>
-          <option value="services">Service Information</option>
-          <option value="pricing">Pricing Information</option>
-          <option value="preplanning">Pre-Planning</option>
-          <option value="obituary">Obituary Submission</option>
-          <option value="general">General Question</option>
+          {CONTACT_REASONS.map(r => (
+            <option key={r.value} value={r.value}>{r.label}</option>
+          ))}
         </select>
       </div>
       <div>

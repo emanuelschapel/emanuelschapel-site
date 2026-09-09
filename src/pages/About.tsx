@@ -175,7 +175,7 @@ export default function About() {
             </div>
 
             <div className="mt-10 flex flex-wrap items-center gap-4">
-              <Button variant="accent" to="/contact">
+              <Button variant="accent" to="/contact?reason=general">
                 Speak with Emanuel&rsquo;s Chapel
               </Button>
               <Button variant="outline" tone="light" to="/services">

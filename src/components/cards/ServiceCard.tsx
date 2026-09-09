@@ -37,7 +37,7 @@ export default function ServiceCard({ service, variant = 'compact' }: ServiceCar
           Learn More
         </Link>
         <Link
-          to="/contact"
+          to="/contact?reason=services"
           className="font-body text-xs text-muted hover:text-ink tracking-widest uppercase transition-colors"
         >
           Request Assistance →

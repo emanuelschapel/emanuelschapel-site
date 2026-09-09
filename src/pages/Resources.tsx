@@ -60,7 +60,7 @@ export default function Resources() {
         headline="Still have questions?"
         subtext="Our team is available 24 hours a day. There is no question too small — we are here to help."
         secondaryLabel="Contact Us"
-        secondaryHref="/contact"
+        secondaryHref="/contact?reason=general"
       />
     </main>
   );

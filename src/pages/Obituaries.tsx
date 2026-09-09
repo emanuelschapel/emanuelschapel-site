@@ -18,7 +18,7 @@ export default function Obituaries() {
         <div className="max-w-5xl mx-auto text-center">
           <p className="font-body text-sm text-muted">
             <span className="font-bold text-ink">Families:</span> To submit an obituary or tribute notice, please{' '}
-            <Link to="/contact" className="text-ink underline">contact our team</Link>.{' '}
+            <Link to="/contact?reason=obituary" className="text-ink underline">contact our team</Link>.{' '}
             <span className="text-xs text-muted">Sample entries shown for demonstration. Online tribute management coming in a future update.</span>
           </p>
         </div>
@@ -37,7 +37,7 @@ export default function Obituaries() {
             <p className="font-body text-muted text-sm mb-6 max-w-md mx-auto">
               Contact our office directly. A staff member can assist you with finding service details or submitting a tribute notice.
             </p>
-            <Link to="/contact" className="btn-outline">Contact Us</Link>
+            <Link to="/contact?reason=obituary" className="btn-outline">Contact Us</Link>
           </div>
         </div>
       </section>

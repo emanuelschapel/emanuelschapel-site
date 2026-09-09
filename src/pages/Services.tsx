@@ -49,7 +49,7 @@ export default function Services() {
                     </li>
                   ))}
                 </ul>
-                <Link to="/contact" className="btn-outline text-sm py-2">Request Assistance</Link>
+                <Link to="/contact?reason=services" className="btn-outline text-sm py-2">Request Assistance</Link>
               </article>
             ))}
           </div>
