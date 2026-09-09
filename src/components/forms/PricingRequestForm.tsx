@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { CheckCircle } from 'lucide-react';
-import { PHONE } from '../../data/navigation';
+import { PHONE, PHONE_HREF } from '../../data/navigation';
 import { validateForm, focusFirstError, inputProps, type Errors, type FormSpec } from '../../lib/formValidation';
 import FieldError from './FieldError';
 import FormStatus from './FormStatus';
@@ -47,7 +47,7 @@ export default function PricingRequestForm() {
     <div className="bg-blush border border-rule rounded-sm p-10 text-center">
       <CheckCircle size={48} className="text-ink mx-auto mb-4" />
       <h3 className="font-display text-2xl text-ink mb-3">Pricing Request Received</h3>
-      <p className="font-body text-muted">We'll be in touch shortly. For immediate questions, call <a href={`tel:${PHONE.replace(/\D/g,'')}`} className="text-ink font-bold">{PHONE}</a>.</p>
+      <p className="font-body text-muted">We'll be in touch shortly. For immediate questions, call <a href={PHONE_HREF} className="text-ink font-bold">{PHONE}</a>.</p>
     </div>
   );
 

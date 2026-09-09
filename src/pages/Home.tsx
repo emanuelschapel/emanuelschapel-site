@@ -8,7 +8,7 @@ import ResourceCard from '../components/cards/ResourceCard';
 import { services } from '../data/services';
 import { obituaries } from '../data/obituaries';
 import { resources } from '../data/resources';
-import { PHONE_HREF } from '../data/navigation';
+import { PHONE, PHONE_HREF } from '../data/navigation';
 
 const trustPoints = [
   { icon: Heart, label: 'Compassionate Guidance', desc: 'Our directors are with you through every step, with care and patience.' },
@@ -40,9 +40,13 @@ export default function Home() {
               Emanuel's Chapel is available 24 hours a day, 7 days a week. Our compassionate team will guide you through every step of the process with clarity, care, and dignity.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <a href={PHONE_HREF} className="btn-primary flex items-center gap-2 justify-center">
+              <a
+                href={PHONE_HREF}
+                className="btn-primary flex items-center gap-2 justify-center"
+                aria-label={`Call Emanuel's Chapel at ${PHONE}`}
+              >
                 <Phone size={16} />
-                Call Now — We're Here
+                Call Now — {PHONE}
               </a>
               <Link to="/immediate-need" className="btn-secondary text-center justify-center">
                 Get Immediate Help

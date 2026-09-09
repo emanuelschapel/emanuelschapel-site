@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { CheckCircle } from 'lucide-react';
-import { PHONE } from '../../data/navigation';
+import { PHONE, PHONE_HREF } from '../../data/navigation';
 import { validateForm, focusFirstError, inputProps, type Errors, type FormSpec } from '../../lib/formValidation';
 import FieldError from './FieldError';
 import FormStatus from './FormStatus';
@@ -54,7 +54,7 @@ export default function ImmediateNeedForm() {
         <h3 className="font-display text-2xl text-ink mb-3">Your Request Has Been Received</h3>
         <p className="font-body text-muted text-base leading-relaxed max-w-md mx-auto">
           Thank you. A member of our team will contact you as soon as possible. If this is urgent, please call us directly at{' '}
-          <a href={`tel:${PHONE.replace(/\D/g,'')}`} className="text-ink font-bold">{PHONE}</a>.
+          <a href={PHONE_HREF} className="text-ink font-bold">{PHONE}</a>.
         </p>
       </div>
     );
@@ -126,7 +126,7 @@ export default function ImmediateNeedForm() {
         {status === 'sending' ? 'Sending…' : 'Submit Request'}
       </button>
       <p className="font-body text-xs text-muted text-center">
-        For urgent matters, please call <a href={`tel:${PHONE.replace(/\D/g,'')}`} className="text-ink font-bold">{PHONE}</a> immediately.
+        For urgent matters, please call <a href={PHONE_HREF} className="text-ink font-bold">{PHONE}</a> immediately.
       </p>
     </form>
   );

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { CheckCircle } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
-import { PHONE } from '../../data/navigation';
+import { PHONE, PHONE_HREF } from '../../data/navigation';
 import { CONTACT_REASONS, toContactReason } from '../../data/contactReasons';
 import { validateForm, focusFirstError, inputProps, type Errors, type FormSpec } from '../../lib/formValidation';
 import FieldError from './FieldError';
@@ -63,7 +63,7 @@ export default function ContactForm() {
     <div className="bg-blush border border-rule rounded-sm p-10 text-center">
       <CheckCircle size={48} className="text-ink mx-auto mb-4" />
       <h3 className="font-display text-2xl text-ink mb-3">Message Received</h3>
-      <p className="font-body text-muted">Thank you for reaching out. A team member will respond shortly. For immediate needs, please call <a href={`tel:${PHONE.replace(/\D/g,'')}`} className="text-ink font-bold">{PHONE}</a>.</p>
+      <p className="font-body text-muted">Thank you for reaching out. A team member will respond shortly. For immediate needs, please call <a href={PHONE_HREF} className="text-ink font-bold">{PHONE}</a>.</p>
     </div>
   );
 
