@@ -103,7 +103,7 @@ export default function ContactForm() {
       </div>
       <FormStatus error={sendError} />
       <p className="font-body text-xs text-muted"><span className="text-danger">*</span> Required</p>
-      <button type="submit" disabled={status === 'sending'} className=" disabled:opacity-60 disabled:cursor-not-allowed">
+      <button type="submit" disabled={status === 'sending'} className="btn-primary w-full text-center disabled:opacity-60 disabled:cursor-not-allowed">
         {status === 'sending' ? 'Sending…' : 'Send Message'}
       </button>
     </form>
