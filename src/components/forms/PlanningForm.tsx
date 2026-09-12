@@ -7,8 +7,6 @@ import FormStatus from './FormStatus';
 import Honeypot from './Honeypot';
 import { submitForm, type SubmitStatus } from '../../lib/formSubmission';
 
-const SUBJECT = "Pre-planning consultation request — emanuelschapel.org";
-
 const SPEC: FormSpec = {
   name:  { id: 'pf-name',  label: 'Full name',     rules: ['required'] },
   phone: { id: 'pf-phone', label: 'Phone number',  rules: ['required', 'phone'] },
@@ -33,7 +31,7 @@ export default function PlanningForm() {
     }
     setStatus('sending');
     setSendError(undefined);
-    const outcome = await submitForm('planning', { ...form, _subject: SUBJECT });
+    const outcome = await submitForm('planning', form);
     if (!outcome.ok) {
       setStatus('error');
       setSendError(outcome.error);

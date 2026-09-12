@@ -7,8 +7,6 @@ import FormStatus from './FormStatus';
 import Honeypot from './Honeypot';
 import { submitForm, type SubmitStatus } from '../../lib/formSubmission';
 
-const SUBJECT = "IMMEDIATE NEED request — emanuelschapel.org";
-
 const SPEC: FormSpec = {
   name:             { id: 'inf-name',            label: 'Your name',            rules: ['required'] },
   phone:            { id: 'inf-phone',           label: 'Phone number',         rules: ['required', 'phone'] },
@@ -37,7 +35,7 @@ export default function ImmediateNeedForm() {
     }
     setStatus('sending');
     setSendError(undefined);
-    const outcome = await submitForm('immediate', { ...form, _subject: SUBJECT });
+    const outcome = await submitForm('immediate', form);
     if (!outcome.ok) {
       setStatus('error');
       setSendError(outcome.error);

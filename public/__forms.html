@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Netlify form definitions — not a page</title>
+  </head>
+  <body>
+    <!--
+      NOT A PAGE. Do not link to this file.
+
+      Netlify Forms discovers forms by parsing the HTML in the publish directory at build
+      time. The site's forms are rendered by React, so the build bot never sees them. Each
+      form is declared here in plain HTML, with the same `name` and the same field names
+      the React component POSTs, so Netlify registers it and accepts the submission.
+
+      Vite copies public/ into dist/ verbatim, which is how this reaches the deploy.
+
+      If you add a field to a React form, add it here too or Netlify will drop it silently.
+      The form `name` values are the single source of truth in src/lib/formSubmission.ts.
+    -->
+
+    <form name="immediate-need" data-netlify="true" data-netlify-honeypot="bot-field" hidden>
+      <input type="hidden" name="form-name" value="immediate-need" />
+      <input type="text" name="bot-field" />
+      <input type="text" name="name" />
+      <input type="tel" name="phone" />
+      <input type="email" name="email" />
+      <input type="text" name="lovedOneName" />
+      <input type="text" name="lovedOneLocation" />
+      <input type="text" name="deathOccurred" />
+      <input type="text" name="serviceType" />
+      <textarea name="message"></textarea>
+    </form>
+
+    <form name="contact" data-netlify="true" data-netlify-honeypot="bot-field" hidden>
+      <input type="hidden" name="form-name" value="contact" />
+      <input type="text" name="bot-field" />
+      <input type="text" name="name" />
+      <input type="tel" name="phone" />
+      <input type="email" name="email" />
+      <input type="text" name="reason" />
+      <textarea name="message"></textarea>
+    </form>
+
+    <form name="planning" data-netlify="true" data-netlify-honeypot="bot-field" hidden>
+      <input type="hidden" name="form-name" value="planning" />
+      <input type="text" name="bot-field" />
+      <input type="text" name="name" />
+      <input type="tel" name="phone" />
+      <input type="email" name="email" />
+      <input type="text" name="contactMethod" />
+      <input type="text" name="interest" />
+      <textarea name="message"></textarea>
+    </form>
+
+    <form name="pricing" data-netlify="true" data-netlify-honeypot="bot-field" hidden>
+      <input type="hidden" name="form-name" value="pricing" />
+      <input type="text" name="bot-field" />
+      <input type="text" name="name" />
+      <input type="tel" name="phone" />
+      <input type="email" name="email" />
+      <input type="text" name="interest" />
+      <input type="text" name="wantGPL" />
+      <textarea name="message"></textarea>
+    </form>
+  </body>
+</html>

@@ -9,8 +9,6 @@ import FormStatus from './FormStatus';
 import Honeypot from './Honeypot';
 import { submitForm, type SubmitStatus } from '../../lib/formSubmission';
 
-const SUBJECT = "New contact message — emanuelschapel.org";
-
 const SPEC: FormSpec = {
   name:    { id: 'cf-name',    label: 'Full name',     rules: ['required'] },
   phone:   { id: 'cf-phone',   label: 'Phone number',  rules: ['required', 'phone'] },
@@ -49,7 +47,7 @@ export default function ContactForm() {
     }
     setStatus('sending');
     setSendError(undefined);
-    const outcome = await submitForm('contact', { ...form, reason, _subject: SUBJECT });
+    const outcome = await submitForm('contact', { ...form, reason });
     if (!outcome.ok) {
       setStatus('error');
       setSendError(outcome.error);

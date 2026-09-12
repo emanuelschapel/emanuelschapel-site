@@ -1,8 +1,8 @@
 import { HONEYPOT_NAME } from '../../lib/formSubmission';
 
 /**
- * Spam trap. Hidden from people and from screen readers; bots fill it in and Formspree
- * discards those submissions. Endpoint ids are public, so something has to filter.
+ * Spam trap. Hidden from people and from screen readers; bots fill it in and Netlify
+ * discards those submissions (each static form declares it via data-netlify-honeypot).
  */
 export default function Honeypot() {
   return (

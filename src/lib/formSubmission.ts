@@ -1,29 +1,42 @@
 /**
- * Formspree submission.
+ * Netlify Forms submission.
  *
- * One endpoint per form, so Immediate Need can carry its own recipients and alerting
- * without dragging a pricing enquiry along with it. Ids live in VITE_ env vars and are
- * swappable without a code change; they are public by design (they sit in the client
- * bundle exactly as they would in a plain HTML form action), which is why the honeypot
- * below matters.
+ * Netlify registers each form by parsing plain HTML in the publish directory at build time
+ * (see public/__forms.html — the React-rendered forms are invisible to that bot). A
+ * submission is then a POST to the site's own origin, URL-encoded, carrying `form-name`
+ * so Netlify knows which registered form it belongs to. No endpoint ids, no env vars:
+ * recipients and notifications are configured in the Netlify dashboard under
+ * Forms → <form> → Notifications, and changing them needs no code change or redeploy.
  *
- * FUTURE (SMS): the Immediate Need endpoint is the one to hang a webhook off — Formspree
- * webhook -> serverless function -> Twilio. Nothing here needs to change for that; the
- * alerting is configured on the Formspree side. Keep the deceased's name and location OUT
- * of any SMS body — that text lands unencrypted on a lock screen. The SMS should say who
- * called and on what number, and let the email carry the detail.
+ * If you add a field to a React form, add it to public/__forms.html as well, or Netlify
+ * will silently drop it.
+ *
+ * LOCAL DEV: the Vite dev server is not Netlify, so a real POST goes nowhere. In dev the
+ * submission is logged and treated as sent so the confirmation UI can still be exercised.
+ * To test the real pipeline locally, run `npx netlify dev` instead of `npm run dev`.
+ *
+ * FUTURE (SMS): Netlify Forms can fire a webhook per form (Notifications → Outgoing
+ * webhook). Point the immediate-need one at a serverless function that calls Twilio.
+ * Keep the deceased's name and location OUT of the SMS body — that text lands
+ * unencrypted on a lock screen. The SMS should say who wrote and on what number, and let
+ * the email carry the detail.
  */
-const ENDPOINTS = {
-  immediate: import.meta.env.VITE_FORMSPREE_IMMEDIATE,
-  contact: import.meta.env.VITE_FORMSPREE_CONTACT,
-  planning: import.meta.env.VITE_FORMSPREE_PLANNING,
-  pricing: import.meta.env.VITE_FORMSPREE_PRICING,
+
+/** Registered form names. Must match the `name` attributes in public/__forms.html. */
+const FORM_NAMES = {
+  immediate: 'immediate-need',
+  contact: 'contact',
+  planning: 'planning',
+  pricing: 'pricing',
 } as const;
 
-export type FormKey = keyof typeof ENDPOINTS;
+export type FormKey = keyof typeof FORM_NAMES;
 
-/** The field name Formspree treats as a honeypot: if it arrives filled, the bot is dropped. */
-export const HONEYPOT_NAME = '_gotcha';
+/**
+ * The honeypot field. Declared on each static form via data-netlify-honeypot; if a
+ * submission arrives with it filled in, Netlify discards it as a bot.
+ */
+export const HONEYPOT_NAME = 'bot-field';
 
 export type SubmitStatus = 'idle' | 'sending' | 'error';
 
@@ -38,41 +51,46 @@ export interface SubmitOutcome {
 const GENERIC_FAILURE =
   'We could not send your message just now. Please call us — we are available 24 hours a day.';
 
+function encode(data: Record<string, unknown>): string {
+  return Object.entries(data)
+    .filter(([, v]) => v !== undefined && v !== null)
+    .map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(String(v))}`)
+    .join('&');
+}
+
 export async function submitForm(
   key: FormKey,
   payload: Record<string, unknown>,
 ): Promise<SubmitOutcome> {
-  const id = ENDPOINTS[key];
+  const formName = FORM_NAMES[key];
+  const body = encode({ 'form-name': formName, [HONEYPOT_NAME]: '', ...payload });
 
-  // No endpoint configured. Fail loudly rather than showing a confirmation for a message
-  // that went nowhere — a silently dropped death call is the worst outcome this code has.
-  if (!id) {
-    console.error(
-      `[formSubmission] No Formspree id for "${key}". Set VITE_FORMSPREE_${key.toUpperCase()} ` +
-        `in .env — see .env.example. Submission was NOT sent.`,
+  if (import.meta.env.DEV) {
+    console.warn(
+      `[formSubmission] DEV MODE — "${formName}" was NOT sent. Netlify Forms only work on ` +
+        `Netlify or under \`npx netlify dev\`. Payload:`,
+      Object.fromEntries(new URLSearchParams(body)),
     );
-    return { ok: false, error: GENERIC_FAILURE };
+    return { ok: true };
   }
 
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
 
   try {
-    const res = await fetch(`https://formspree.io/f/${id}`, {
+    const res = await fetch('/', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-      body: JSON.stringify(payload),
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body,
       signal: controller.signal,
     });
 
     if (res.ok) return { ok: true };
 
-    const body = await res.json().catch(() => null);
-    const detail = body?.errors?.[0]?.message;
-    console.error(`[formSubmission] Formspree rejected "${key}" (${res.status})`, body);
-    return { ok: false, error: detail ? `${detail} ${GENERIC_FAILURE}` : GENERIC_FAILURE };
+    console.error(`[formSubmission] Netlify rejected "${formName}" (${res.status})`);
+    return { ok: false, error: GENERIC_FAILURE };
   } catch (err) {
-    console.error(`[formSubmission] Network failure sending "${key}"`, err);
+    console.error(`[formSubmission] Network failure sending "${formName}"`, err);
     return { ok: false, error: GENERIC_FAILURE };
   } finally {
     clearTimeout(timer);

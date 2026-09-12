@@ -7,8 +7,6 @@ import FormStatus from './FormStatus';
 import Honeypot from './Honeypot';
 import { submitForm, type SubmitStatus } from '../../lib/formSubmission';
 
-const SUBJECT = "Pricing information request — emanuelschapel.org";
-
 const SPEC: FormSpec = {
   name:  { id: 'pr-name',  label: 'Full name',     rules: ['required'] },
   phone: { id: 'pr-phone', label: 'Phone number',  rules: ['required', 'phone'] },
@@ -33,7 +31,7 @@ export default function PricingRequestForm() {
     }
     setStatus('sending');
     setSendError(undefined);
-    const outcome = await submitForm('pricing', { ...form, _subject: SUBJECT });
+    const outcome = await submitForm('pricing', form);
     if (!outcome.ok) {
       setStatus('error');
       setSendError(outcome.error);

@@ -31,24 +31,49 @@ Production tokens (Sept 2026). The prototype's fuchsia/plum palette is retired �
 | Borders and dividers | `rule` | `#EBD8DE` |
 | Form errors | `danger` | `#B3261E` |
 
-## Form Submissions
-All four forms POST to [Formspree](https://formspree.io), one endpoint per form.
+## Hosting — Netlify
+Deployed from the `main` branch of `github.com/emanuelschapel/emanuelschapel-site` to
+https://emanuelschapelrebrand.netlify.app. `netlify.toml` holds the build command, publish
+directory, Node version, and the `/* → /index.html` rewrite that `BrowserRouter` needs —
+without it a refresh on any page but `/` is a hard 404.
 
-1. Create four forms in the **client's** Formspree account — these submissions carry a
-   deceased person's name and location, so the client is the data controller.
-2. `cp .env.example .env` and paste each form id (the hash from `https://formspree.io/f/<hash>`).
-3. Set the notification recipient in the Formspree dashboard. It is **not** part of the id,
-   so changing it later needs no code change and no redeploy.
+The git remote stays GitHub. Netlify pulls from it; pushing to `main` deploys.
 
-If an id is missing the form shows a failure notice with the phone number rather than a
-false confirmation — a silently dropped death call is the worst outcome this code has.
+## Form Submissions — Netlify Forms
+All four forms submit to [Netlify Forms](https://docs.netlify.com/forms/setup/). No
+endpoint ids, no env vars, no third-party account.
+
+**How it works.** Netlify registers forms by parsing plain HTML in the publish directory at
+build time. The React-rendered forms are invisible to that bot, so each one is declared in
+`public/__forms.html` with the same `name` and field names the component POSTs. Vite
+copies that file into `dist/`, Netlify finds it, and the four forms appear under
+**Forms** in the Netlify dashboard after the first deploy.
+
+**If you add a field to a React form, add it to `public/__forms.html` too** — Netlify
+silently drops fields it has not seen declared.
+
+**Notifications** (who gets the email) are set in the dashboard: Forms → *form* →
+Notifications. Moving from the yahoo address to a business address later is a dashboard
+change — no code, no redeploy. Notify the client's inbox for all four; the Immediate Need
+form is the one that warrants a second recipient.
+
+**Spam.** Each form declares a `bot-field` honeypot. Netlify also runs Akismet on every
+submission; flagged entries land under the form's *Spam* tab rather than being lost.
+
+**Free tier** is capped per month — check current limits. Past the cap, submissions are
+rejected and the visitor sees the failure notice with the phone number, never a false
+confirmation.
+
+**Local dev.** The Vite dev server is not Netlify, so in `npm run dev` a submission is
+logged to the console and treated as sent so the confirmation UI can be exercised. To test
+the real pipeline locally, run `npx netlify dev`.
 
 Validation lives in `src/lib/formValidation.ts`; every form runs `noValidate` and validates
 there, because native `required` treats a single space as a filled field.
 
-**FUTURE (SMS):** hang a Formspree webhook off the Immediate Need endpoint → serverless
-function → Twilio. No frontend change needed. Keep the deceased's name and location out of
-the SMS body — that lands unencrypted on a lock screen.
+**FUTURE (SMS):** Forms → immediate-need → Notifications → *Outgoing webhook*, pointed at
+a serverless function that calls Twilio. No frontend change needed. Keep the deceased's
+name and location out of the SMS body — that lands unencrypted on a lock screen.
 
 ## Getting Started
 ```bash
@@ -92,7 +117,8 @@ See `src/data/futurePhases.ts` for a complete integration map.
 - **Phase 4:** Payments, CRM, admin dashboard, analytics, local SEO landing pages
 
 ## Notes for Production
-1. Replace form handlers with real API endpoints (Formspree, EmailJS, or custom backend)
+1. ~~Replace form handlers with real API endpoints~~ — done, Netlify Forms (see above).
+   Still to do: set notification recipients in the Netlify dashboard and send a test.
 2. Verify all staff names/titles with client before publishing
 3. Confirm exact address and business hours with client
 4. Add Google Maps embed to Contact page
