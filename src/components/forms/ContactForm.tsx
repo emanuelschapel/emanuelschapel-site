@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { CheckCircle } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
 import { PHONE, PHONE_HREF } from '../../data/navigation';
-import { CONTACT_REASONS, toContactReason } from '../../data/contactReasons';
+import { CONTACT_REASONS, SERVICE_OPTIONS, toContactReason, toServiceId, serviceLabel } from '../../data/contactReasons';
 import { validateForm, focusFirstError, inputProps, type Errors, type FormSpec } from '../../lib/formValidation';
 import FieldError from './FieldError';
 import FormStatus from './FormStatus';
@@ -37,6 +37,13 @@ export default function ContactForm() {
   const [chosenReason, setChosenReason] = useState<string | null>(null);
   const reason = chosenReason ?? prefilled;
 
+  // Sub-category, same pattern. Only meaningful while reason is "services"; the select is
+  // hidden otherwise and the value is dropped from the payload so a stale pick from an
+  // earlier click cannot ride along under a different reason.
+  const prefilledService = toServiceId(params.get('service'));
+  const [chosenService, setChosenService] = useState<string | null>(null);
+  const service = reason === 'services' ? (chosenService ?? prefilledService) : '';
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const found = validateForm(form, SPEC);
@@ -47,7 +54,9 @@ export default function ContactForm() {
     }
     setStatus('sending');
     setSendError(undefined);
-    const outcome = await submitForm('contact', { ...form, reason });
+    // Send the readable title, not the id — the notification email should say
+    // "Service: Burial Services", not "Service: burial".
+    const outcome = await submitForm('contact', { ...form, reason, service: serviceLabel(service) });
     if (!outcome.ok) {
       setStatus('error');
       setSendError(outcome.error);
@@ -94,6 +103,17 @@ export default function ContactForm() {
           ))}
         </select>
       </div>
+      {reason === 'services' && (
+        <div>
+          <label htmlFor="cf-service" className="form-label">Which service?</label>
+          <select id="cf-service" value={service} onChange={e => setChosenService(e.target.value)} className="form-input">
+            <option value="">Please select</option>
+            {SERVICE_OPTIONS.map(s => (
+              <option key={s.value} value={s.value}>{s.label}</option>
+            ))}
+          </select>
+        </div>
+      )}
       <div>
         <label htmlFor="cf-message" className="form-label">Your Message <span className="text-danger">*</span></label>
         <textarea id="cf-message" rows={5} required value={form.message} onChange={set('message')} placeholder="How can we help you?" {...inputProps('cf-message', errors.message)} />

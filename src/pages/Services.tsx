@@ -49,7 +49,13 @@ export default function Services() {
                     </li>
                   ))}
                 </ul>
-                <Link to="/contact?reason=services" className="btn-outline text-sm py-2">Request Assistance</Link>
+                <Link
+                  to={`/contact?reason=services&service=${service.id}`}
+                  className="btn-outline text-sm py-2"
+                  aria-label={`Request assistance with ${service.title}`}
+                >
+                  Request Assistance
+                </Link>
               </article>
             ))}
           </div>

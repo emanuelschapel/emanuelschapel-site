@@ -37,8 +37,9 @@ export default function ServiceCard({ service, variant = 'compact' }: ServiceCar
           Learn More
         </Link>
         <Link
-          to="/contact?reason=services"
+          to={`/contact?reason=services&service=${service.id}`}
           className="font-body text-xs text-muted hover:text-ink tracking-widest uppercase transition-colors"
+          aria-label={`Request assistance with ${service.title}`}
         >
           Request Assistance →
         </Link>

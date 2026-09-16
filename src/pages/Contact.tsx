@@ -1,10 +1,14 @@
 import { Phone, MapPin, Clock, AlertCircle } from 'lucide-react';
 import PageHero from '../components/sections/PageHero';
 import ContactForm from '../components/forms/ContactForm';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { PHONE, PHONE_HREF, ADDRESS, HOURS_NOTE, ADDRESS_NOTE } from '../data/navigation';
 
 export default function Contact() {
+  // React Router reuses this element when only the query string changes, so without a key
+  // a visitor who submits and then follows another "Request Assistance" link would land on
+  // the previous confirmation instead of a fresh form pre-filled for the new service.
+  const { search } = useLocation();
   return (
     <main>
       <PageHero
@@ -91,7 +95,7 @@ export default function Contact() {
           {/* Form */}
           <div className="lg:col-span-2">
             <h2 className="section-title text-2xl mb-8">Send Us a Message</h2>
-            <ContactForm />
+            <ContactForm key={search} />
           </div>
         </div>
       </section>
