@@ -14,16 +14,36 @@ import About from './pages/About';
 import Resources from './pages/Resources';
 import Contact from './pages/Contact';
 
-function ScrollToTop() {
-  const { pathname } = useLocation();
-  useEffect(() => { window.scrollTo(0, 0); }, [pathname]);
+/**
+ * Scroll to the top on route change — unless the URL carries a hash, in which case scroll
+ * to that element instead. Previously this fired unconditionally, which is why every
+ * "Learn More" link (/services#burial etc.) landed at the top of the Services page.
+ *
+ * The target is looked up after paint, since the destination page has only just rendered.
+ * Each anchored section sets `scroll-mt-*` so it clears the sticky availability bar + header.
+ */
+function ScrollManager() {
+  const { pathname, hash } = useLocation();
+  useEffect(() => {
+    if (!hash) {
+      window.scrollTo(0, 0);
+      return;
+    }
+    const id = decodeURIComponent(hash.slice(1));
+    const frame = requestAnimationFrame(() => {
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ block: 'start' });
+      else window.scrollTo(0, 0);
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [pathname, hash]);
   return null;
 }
 
 function AppLayout() {
   return (
     <>
-      <ScrollToTop />
+      <ScrollManager />
       {/* Bar + header stick as one block, so the 24/7 phone number never scrolls away.
           Their combined height (~7rem) is what the home hero subtracts from the viewport. */}
       <div className="sticky top-0 z-40">

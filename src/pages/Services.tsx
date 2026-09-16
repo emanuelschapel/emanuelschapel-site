@@ -34,7 +34,9 @@ export default function Services() {
               <article
                 key={service.id}
                 id={service.id}
-                className="bg-white p-8 rounded-sm shadow-sm border border-gray-100"
+                // scroll-mt clears the sticky availability bar + header (~7rem) so a
+                // "Learn More" anchor lands with the section title visible, not hidden under it.
+                className="scroll-mt-32 bg-white p-8 rounded-sm shadow-sm border border-gray-100"
               >
                 <div className="flex items-center gap-3 mb-5">
                   <span className="text-ink text-xl" aria-hidden="true">✦</span>

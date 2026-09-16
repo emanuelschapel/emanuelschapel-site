@@ -18,6 +18,17 @@ const trustPoints = [
   { icon: Star, label: 'Professional Support', desc: 'Experienced, licensed funeral directors available around the clock.' },
 ];
 
+/**
+ * The three services a family is actually choosing between in the first hour. The rest are
+ * one click away behind "View All Services" — which only has a job if this list is short.
+ * Picked by id rather than slice() so reordering services.ts cannot silently change what is
+ * featured here.
+ */
+const FEATURED_SERVICE_IDS = ['burial', 'cremation', 'memorial'] as const;
+const featuredServices = FEATURED_SERVICE_IDS.map(id => services.find(s => s.id === id)).filter(
+  (s): s is NonNullable<typeof s> => s !== undefined,
+);
+
 export default function Home() {
   return (
     <main>
@@ -83,7 +94,7 @@ export default function Home() {
             </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {services.slice(0, 6).map(service => (
+            {featuredServices.map(service => (
               <ServiceCard key={service.id} service={service} />
             ))}
           </div>
