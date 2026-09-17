@@ -3,7 +3,7 @@ import { ArrowLeft, Calendar, MapPin, Video, Clock } from 'lucide-react';
 import { PortableText } from '@portabletext/react';
 import CTASection from '../components/sections/CTASection';
 import { PHONE, PHONE_HREF } from '../data/navigation';
-import { fetchObituary, imageUrl, lifespan, longDate, serviceWhen, sanityConfigured } from '../lib/sanity';
+import { fetchObituary, imageUrl, lifespan, longDate, serviceWhen, sanityConfigured, MEMORIAL_IMAGE } from '../lib/sanity';
 import { useRemote } from '../lib/useSanity';
 
 /**
@@ -59,17 +59,15 @@ export default function Tribute() {
             <ArrowLeft size={14} aria-hidden="true" /> All obituaries
           </Link>
           <div className="grid grid-cols-1 md:grid-cols-[minmax(0,18rem)_1fr] gap-10 items-end">
-            {portrait && (
-              <div className="relative w-56 md:w-full max-w-[18rem]">
-                <div className="absolute -inset-3 border border-pink/45 rounded-sm" aria-hidden="true" />
-                <img
-                  src={portrait}
-                  alt={o.portrait?.alt ?? `Portrait of ${o.name}`}
-                  className="relative w-full aspect-[4/5] object-cover rounded-sm shadow-[0_18px_50px_rgba(0,0,0,0.45)]"
-                  decoding="async"
-                />
-              </div>
-            )}
+            <div className="relative w-56 md:w-full max-w-[18rem]">
+              <div className="absolute -inset-3 border border-pink/45 rounded-sm" aria-hidden="true" />
+              <img
+                src={portrait ?? MEMORIAL_IMAGE}
+                alt={portrait ? (o.portrait?.alt ?? `Portrait of ${o.name}`) : ''}
+                className="relative w-full aspect-[4/5] object-cover rounded-sm shadow-[0_18px_50px_rgba(0,0,0,0.45)]"
+                decoding="async"
+              />
+            </div>
             <div>
               <div className="flex items-center gap-3 mb-5">
                 <div className="h-px w-8 bg-pink" />

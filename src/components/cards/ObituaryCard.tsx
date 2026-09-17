@@ -1,6 +1,6 @@
 import { Calendar, MapPin, Video } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { imageUrl, lifespan, serviceWhen, type ObituarySummary } from '../../lib/sanity';
+import { imageUrl, lifespan, serviceWhen, MEMORIAL_IMAGE, type ObituarySummary } from '../../lib/sanity';
 
 interface ObituaryCardProps {
   obituary: ObituarySummary;
@@ -13,17 +13,15 @@ export default function ObituaryCard({ obituary }: ObituaryCardProps) {
 
   return (
     <article className="bg-white border border-gray-100 rounded-sm overflow-hidden card-hover flex flex-col" aria-label={`Obituary for ${obituary.name}`}>
-      {/* Portrait, or a monogram when the family has not supplied one */}
-      <Link to={tribute} className="block h-48 relative bg-gradient-to-br from-blush to-ink/10" tabIndex={-1} aria-hidden="true">
-        {portrait ? (
-          <img src={portrait} alt="" className="absolute inset-0 h-full w-full object-cover" loading="lazy" decoding="async" />
-        ) : (
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-24 h-24 rounded-full bg-ink/20 flex items-center justify-center">
-              <span className="font-display text-3xl text-ink/50">{obituary.name.charAt(0)}</span>
-            </div>
-          </div>
-        )}
+      {/* Portrait, or the memorial candle when the family has not supplied one */}
+      <Link to={tribute} className="block h-48 relative bg-ink" tabIndex={-1} aria-hidden="true">
+        <img
+          src={portrait ?? MEMORIAL_IMAGE}
+          alt=""
+          className="absolute inset-0 h-full w-full object-cover"
+          loading="lazy"
+          decoding="async"
+        />
       </Link>
 
       <div className="p-6 flex flex-col flex-1">

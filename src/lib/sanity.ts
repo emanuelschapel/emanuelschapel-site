@@ -33,6 +33,13 @@ export const sanity = sanityConfigured
 
 const builder = sanity ? imageUrlBuilder(sanity) : null;
 
+/**
+ * Shown wherever a portrait would go when the family has not supplied one: a single lit
+ * candle in the brand palette. A vector, so it is crisp at any size and never reads as
+ * stock. Decorative — the name always sits beside it, so it carries alt="".
+ */
+export const MEMORIAL_IMAGE = '/images/brand/memorial-candle.svg';
+
 /** A sized, auto-format URL for a Sanity image, honouring the editor's hotspot. */
 export function imageUrl(source: SanityImageSource, width: number, height?: number): string | undefined {
   if (!builder) return undefined;
