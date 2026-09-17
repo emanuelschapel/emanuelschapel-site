@@ -1,6 +1,10 @@
 import PageHero from '../components/sections/PageHero';
 import { Button } from '../components/ui/Button';
 import CTASection from '../components/sections/CTASection';
+import { site } from '../data/site';
+
+/** The "Our Team" grid is hidden until the client confirms names and titles. Flip to show. */
+const SHOW_TEAM = false;
 
 // Staff data — titles only; names not invented. Client to provide verified titles for production.
 const staffMembers = [
@@ -186,7 +190,8 @@ export default function About() {
         </div>
       </section>
 
-      {/* Staff */}
+      {/* Staff — hidden for now (SHOW_TEAM). Kept intact so it is one word to bring back. */}
+      {SHOW_TEAM && (
       <section className="bg-white py-20 px-6">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-14">
@@ -227,27 +232,48 @@ export default function About() {
           </div>
         </div>
       </section>
+      )}
 
-      {/* Facility */}
-      <section className="bg-blush py-20 px-6">
+      {/* Facility — one feature photo with two supporting, every image captioned so each
+          says what it IS. The previous strip was three near-identical shots of empty chairs
+          with no words; the viewing room (the most distinctive photo) was not in it at all. */}
+      <section className="bg-blush py-20 px-6" aria-labelledby="facility-heading">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="section-title mb-4">Our Facility</h2>
-            <p className="section-subtitle max-w-lg mx-auto">A peaceful, dignified space designed to provide comfort to families during a difficult time.</p>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-12 items-end mb-9">
+            <div>
+              <div className="flex items-center gap-3 mb-5">
+                <div className="h-px w-8 bg-pink" />
+                <span className="text-ink text-xs tracking-[0.4em] font-body uppercase">Our Facility</span>
+              </div>
+              <h2 id="facility-heading" className="section-title">
+                A peaceful, dignified space<br className="hidden sm:block" /> for saying goodbye.
+              </h2>
+            </div>
+            <p className="section-subtitle lg:max-w-md">
+              Designed to give families comfort, privacy, and room to gather — from an intimate viewing to a full chapel service.
+            </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[
-              { src: '/chapel_interior_main_seating_gray_chairs.jpg', alt: 'Main chapel seating' },
-              { src: '/chapel_interior_burgundy_seating.jpg', alt: 'Chapel seating area' },
-              { src: '/chapel_interior_extended_seating_view.jpg', alt: 'Extended chapel view' },
-            ].map(img => (
-              <img
-                key={img.src}
-                src={img.src}
-                alt={img.alt}
-                className="w-full h-52 object-cover rounded-sm shadow-md"
-              />
-            ))}
+
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-[1.35fr_1fr] lg:grid-rows-[280px_280px]">
+            <FacilityPhoto
+              feature
+              src="/chapel_casket_display_gold_drapes.jpg"
+              alt="The viewing room: a casket beneath draped gold curtains, flanked by pink and white floral arrangements"
+              title="The Viewing Room"
+              caption="Private, softly lit, arranged around your loved one."
+            />
+            <FacilityPhoto
+              src="/chapel_interior_extended_seating_view.jpg"
+              alt="The main chapel, rows of seating facing the front under a chandelier"
+              title="The Main Chapel"
+              caption="Room for everyone who loved them."
+            />
+            <FacilityPhoto
+              src="/facility_front_exterior_signage.jpg"
+              alt="The front entrance of Emanuel's Chapel Funeral Home with its street sign"
+              title="Finding Us"
+              caption={`${site.address.street} — our staff will meet you at the door.`}
+            />
           </div>
         </div>
       </section>
@@ -259,5 +285,34 @@ export default function About() {
         secondaryHref="/services"
       />
     </main>
+  );
+}
+
+/**
+ * A facility photo with its name and a one-line caption over a bottom scrim. The scrim is
+ * ink at 85% at the baseline, so white copy clears 4.5:1 regardless of what is in the photo.
+ * `feature` spans both rows of the desktop grid.
+ */
+function FacilityPhoto({
+  src, alt, title, caption, feature = false,
+}: { src: string; alt: string; title: string; caption: string; feature?: boolean }) {
+  return (
+    <figure
+      className={`relative overflow-hidden rounded-sm ${
+        feature
+          ? 'aspect-[4/3] lg:aspect-auto lg:row-span-2 shadow-[0_18px_50px_rgba(0,0,0,0.14)]'
+          : 'aspect-[4/3] lg:aspect-auto shadow-[0_6px_20px_rgba(0,0,0,0.10)]'
+      }`}
+    >
+      <img src={src} alt={alt} className="absolute inset-0 h-full w-full object-cover" loading="lazy" decoding="async" />
+      <figcaption
+        className={`absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/85 via-ink/40 to-transparent text-white ${
+          feature ? 'px-7 pb-7 pt-20' : 'px-5 pb-5 pt-14'
+        }`}
+      >
+        <h3 className={`font-display font-normal leading-tight mb-1 ${feature ? 'text-2xl' : 'text-xl'}`}>{title}</h3>
+        <p className={`font-body text-white/80 ${feature ? 'text-sm' : 'text-[13px]'}`}>{caption}</p>
+      </figcaption>
+    </figure>
   );
 }
