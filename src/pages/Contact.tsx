@@ -3,6 +3,15 @@ import PageHero from '../components/sections/PageHero';
 import ContactForm from '../components/forms/ContactForm';
 import { Link, useLocation } from 'react-router-dom';
 import { PHONE, PHONE_HREF, ADDRESS, HOURS_NOTE, ADDRESS_NOTE } from '../data/navigation';
+import { site } from '../data/site';
+
+/**
+ * Business name + address, so Google shows the listing card rather than a bare pin.
+ * Verified 2026-09-16: the name, the address, and Google's own listing all geocode to
+ * 41.8007,-87.6845 (5112 S. Western). If these ever disagree again, the address in
+ * site.ts is the thing to suspect first — it was wrong ("Wentworth") for all of Phase 1.
+ */
+const MAP_QUERY = encodeURIComponent(`${site.legalName}, ${ADDRESS}`);
 
 export default function Contact() {
   // React Router reuses this element when only the query string changes, so without a key
@@ -75,13 +84,29 @@ export default function Contact() {
               </div>
             </div>
 
-            {/* Map placeholder */}
-            <div className="mt-10 bg-blush rounded-sm h-52 flex items-center justify-center border border-rule">
-              <div className="text-center">
-                <MapPin size={32} className="text-ink mx-auto mb-3 opacity-50" />
-                <p className="font-body text-sm text-muted">Map integration available</p>
-                <p className="font-body text-xs text-muted">(Google Maps embed — Phase 2)</p>
+            {/* Map — keyless Google embed, address from site.ts. Lazy so it does not compete
+                with the form for first paint; a "Get directions" link below for phones, where
+                the native Maps app is what a visitor actually wants. */}
+            <div className="mt-10">
+              <div className="overflow-hidden rounded-sm border border-rule shadow-sm">
+                <iframe
+                  title={`Map showing ${site.legalName} at ${ADDRESS}`}
+                  src={`https://www.google.com/maps?q=${MAP_QUERY}&output=embed`}
+                  className="block h-64 w-full"
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  allowFullScreen
+                />
               </div>
+              <a
+                href={`https://www.google.com/maps/dir/?api=1&destination=${MAP_QUERY}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-3 inline-flex items-center gap-2 font-body text-sm font-bold text-ink underline underline-offset-4 hover:text-muted"
+              >
+                <MapPin size={15} aria-hidden="true" />
+                Get directions
+              </a>
             </div>
 
             <div className="mt-8 bg-blush border-l-4 border-pink p-5 rounded-sm">

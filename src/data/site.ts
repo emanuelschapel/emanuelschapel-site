@@ -15,7 +15,7 @@ export const site = {
   availability: 'Available 24 hours a day, every day',
   hoursNote: 'Available 24 hours a day, 7 days a week for immediate needs.',
   address: {
-    street: '5112 S. Wentworth Ave.',
+    street: '5112 S. Western Ave.', // corrected 2026-09-16 — was wrongly "Wentworth" from Phase 1
     city: 'Chicago',
     state: 'IL',
     zip: '60609',
@@ -23,7 +23,7 @@ export const site = {
   },
 } as const;
 
-/** `5112 S. Wentworth Ave., Chicago, IL 60609` */
+/** `5112 S. Western Ave., Chicago, IL 60609` */
 export const formattedAddress = `${site.address.street}, ${site.address.city}, ${site.address.state} ${site.address.zip}`;
 
 /** Quick paths for visitors who are not in immediate need. Order = priority. */

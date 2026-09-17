@@ -119,8 +119,12 @@ See `src/data/futurePhases.ts` for a complete integration map.
 ## Notes for Production
 1. ~~Replace form handlers with real API endpoints~~ — done, Netlify Forms (see above).
    Still to do: set notification recipients in the Netlify dashboard and send a test.
-2. Verify all staff names/titles with client before publishing
-3. Confirm exact address and business hours with client
-4. Add Google Maps embed to Contact page
-5. Add verified schema.org LocalBusiness markup
-6. Confirm phone number (773) 912-6745 is active and monitored 24/7
+2. ~~Verify all staff names/titles~~ — Our Team grid hidden (`SHOW_TEAM` in About.tsx) until
+   the client confirms names. Owner bio is still placeholder copy.
+3. ~~Confirm exact address~~ — street corrected 2026-09-16: **5112 S. Western Ave.** (Phase 1
+   shipped "Wentworth", which was wrong; Google's listing had it right all along). ZIP 60609
+   not yet independently confirmed — Western at 51st sits near the 60609/60632 line. Office
+   hours still open; site currently states 24/7 availability only.
+4. ~~Add Google Maps embed to Contact page~~ — done, keyless embed + Get directions link.
+5. Add schema.org LocalBusiness markup — pending the production domain and office hours.
+6. ~~Confirm phone number is active and monitored 24/7~~ — confirmed 2026-09-16.
