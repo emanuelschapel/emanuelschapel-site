@@ -18,9 +18,14 @@ export const site = {
     street: '5112 S. Western Ave.', // corrected 2026-09-16 — was wrongly "Wentworth" from Phase 1
     city: 'Chicago',
     state: 'IL',
-    zip: '60609',
+    zip: '60609', // TODO (client): confirm — Western at 51st is near the 60609/60632 line
     note: '(Please verify current hours by phone)',
   },
+  /**
+   * Geocode of the building, matching Google's business listing (verified 2026-09-16).
+   * Used by the schema.org markup so search engines can pin the site to the same spot.
+   */
+  geo: { latitude: 41.8006616, longitude: -87.684455 },
 } as const;
 
 /** `5112 S. Western Ave., Chicago, IL 60609` */
