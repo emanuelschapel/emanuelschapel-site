@@ -8,6 +8,7 @@ import Home from './pages/Home';
 import ImmediateNeed from './pages/ImmediateNeed';
 import Services from './pages/Services';
 import Obituaries from './pages/Obituaries';
+import Tribute from './pages/Tribute';
 import PlanningAhead from './pages/PlanningAhead';
 import PricingPackages from './pages/PricingPackages';
 import About from './pages/About';
@@ -55,6 +56,7 @@ function AppLayout() {
         <Route path="/immediate-need" element={<ImmediateNeed />} />
         <Route path="/services" element={<Services />} />
         <Route path="/obituaries" element={<Obituaries />} />
+        <Route path="/obituaries/:slug" element={<Tribute />} />
         <Route path="/planning-ahead" element={<PlanningAhead />} />
         <Route path="/pricing" element={<PricingPackages />} />
         <Route path="/about" element={<About />} />

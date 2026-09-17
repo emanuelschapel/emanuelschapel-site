@@ -11,19 +11,19 @@ export const futurePhases = {
     title: 'Real Obituary Management & Tribute Pages',
     timeline: 'Phase 2',
     features: [
-      'Replace static obituaries.ts data with API fetch from CMS (e.g., Contentful, Sanity, or custom Node.js/Express backend)',
+      'DONE 2026-09-17: obituaries come from Sanity (studio/, src/lib/sanity.ts)',
       'Tribute pages: dynamic /obituaries/:id route with individual tribute content',
       'Online flower ordering: integrate 1-800-Flowers or similar vendor API',
       'Donation links: connect to PayPal or Stripe donation forms on tribute pages',
-      'Livestream links: embed or link to Facebook Live / YouTube Live per service',
+      'DONE: livestream per obituary, on/off toggle + URL in the Studio',
       'Condolence submission: form that saves to database and notifies family',
       'Obituary search and filter: server-side pagination, date filter, name search',
     ],
     connectsIn: [
-      'src/data/obituaries.ts → replace with API call',
+      'src/lib/sanity.ts → fetchObituaries / fetchObituary (done)',
       'src/pages/Obituaries.tsx → add pagination, search state, API integration',
       'src/components/cards/ObituaryCard.tsx → add "View Tribute" link to dynamic route',
-      'src/pages/ → add TributePage.tsx for /obituaries/:id',
+      'src/pages/Tribute.tsx → /obituaries/:slug (done)',
     ],
   },
 

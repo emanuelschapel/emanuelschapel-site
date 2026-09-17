@@ -39,6 +39,45 @@ without it a refresh on any page but `/` is a hard 404.
 
 The git remote stays GitHub. Netlify pulls from it; pushing to `main` deploys.
 
+## Obituaries — Sanity
+Obituaries are content, edited by the client in a Sanity Studio and read by the site from
+Sanity's CDN in the visitor's browser. Static sample data is gone; the page shows exactly
+what is published.
+
+```
+studio/                     the Studio: schema + config. Its own package.json.
+src/lib/sanity.ts           client, GROQ queries, date/image helpers
+src/lib/useSanity.ts        fetch lifecycle → loading / ready / error
+src/components/cards/ObituaryGrid.tsx   renders every state calmly
+src/pages/Tribute.tsx       /obituaries/:slug
+```
+
+**One-time setup (client's Sanity account — these documents hold the deceased's names and
+family details, so the client is the data controller):**
+
+1. `cd studio && npx sanity login` as the client, then `npx sanity init` → create a new
+   project named "Emanuel's Chapel", dataset `production`, **public** visibility.
+2. Copy the project id into `studio/.env` (from `studio/.env.example`) and into the site's
+   `.env` as `VITE_SANITY_PROJECT_ID`. Set the same variable in Netlify → Environment
+   variables and redeploy — it is baked in at build time.
+3. Manage → API → **CORS origins**: add `http://localhost:5173`,
+   `https://emanuelchapelrebrand.netlify.app`, and later the production domain.
+   Leave "Allow credentials" **off**.
+4. `cd studio && npm run deploy` publishes the Studio to
+   `https://emanuels-chapel.sanity.studio` (name in `studio/sanity.cli.ts`). Invite Lakedia
+   there as an Editor.
+
+**Why it is safe to read from the browser:** the site never sends a token, so it can only
+read published documents. Drafts are invisible outside the Studio. The project id is
+public by design — it is in every API URL.
+
+**Livestream** is per obituary: a toggle plus a link, in the Studio. Off hides the button
+and keeps the link. **Condolences** are deliberately not built — public comments on a
+grief page need moderation before they exist.
+
+**Until the project id is configured**, the obituaries sections show a plain "not
+connected yet" notice rather than a blank grid.
+
 ## Form Submissions — Netlify Forms
 All four forms submit to [Netlify Forms](https://docs.netlify.com/forms/setup/). No
 endpoint ids, no env vars, no third-party account.
@@ -85,7 +124,8 @@ npm run dev
 - `/` — Home
 - `/immediate-need` — Immediate Need
 - `/services` — Services
-- `/obituaries` — Obituaries (static data)
+- `/obituaries` — Obituaries (Sanity)
+- `/obituaries/:slug` — Tribute page (Sanity)
 - `/planning-ahead` — Planning Ahead
 - `/pricing` — Pricing & Packages
 - `/about` — About Us
@@ -101,7 +141,8 @@ src/
     cards/       — ServiceCard, ObituaryCard, ResourceCard
     forms/       — ImmediateNeedForm, PlanningForm, PricingRequestForm, ContactForm
     ui/          — FAQAccordion
-  data/          — services.ts, obituaries.ts, faqs.ts, resources.ts, navigation.ts, futurePhases.ts
+  data/          — site.ts, services.ts, faqs.ts, resources.ts, navigation.ts, contactReasons.ts, futurePhases.ts
+  lib/           — sanity.ts, useSanity.ts, formSubmission.ts, formValidation.ts
   pages/         — All 9 pages
   index.css      — Global styles + Tailwind layers
   App.tsx        — Router + layout shell

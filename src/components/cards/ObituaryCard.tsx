@@ -1,69 +1,68 @@
-import { Calendar, MapPin, Clock, Heart } from 'lucide-react';
-import type { Obituary } from '../../data/obituaries';
+import { Calendar, MapPin, Video } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { imageUrl, lifespan, serviceWhen, type ObituarySummary } from '../../lib/sanity';
 
 interface ObituaryCardProps {
-  obituary: Obituary;
+  obituary: ObituarySummary;
 }
 
 export default function ObituaryCard({ obituary }: ObituaryCardProps) {
+  const tribute = `/obituaries/${obituary.slug}`;
+  const portrait = obituary.portrait ? imageUrl(obituary.portrait.asset, 640, 480) : undefined;
+  const when = serviceWhen(obituary);
+
   return (
     <article className="bg-white border border-gray-100 rounded-sm overflow-hidden card-hover flex flex-col" aria-label={`Obituary for ${obituary.name}`}>
-      {/* Photo area */}
-      <div className="bg-gradient-to-br from-blush to-ink/10 h-48 flex items-center justify-center relative">
-        <div className="w-24 h-24 rounded-full bg-ink/20 flex items-center justify-center">
-          <span className="font-display text-3xl text-ink/50">
-            {obituary.name.charAt(0)}
-          </span>
-        </div>
-        {obituary.isSampleData && (
-          <span className="absolute top-3 right-3 bg-pink-wash text-ink text-xs px-2 py-1 rounded font-body tracking-wide">
-            Sample
-          </span>
+      {/* Portrait, or a monogram when the family has not supplied one */}
+      <Link to={tribute} className="block h-48 relative bg-gradient-to-br from-blush to-ink/10" tabIndex={-1} aria-hidden="true">
+        {portrait ? (
+          <img src={portrait} alt="" className="absolute inset-0 h-full w-full object-cover" loading="lazy" decoding="async" />
+        ) : (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="w-24 h-24 rounded-full bg-ink/20 flex items-center justify-center">
+              <span className="font-display text-3xl text-ink/50">{obituary.name.charAt(0)}</span>
+            </div>
+          </div>
         )}
-      </div>
+      </Link>
 
-      {/* Content */}
       <div className="p-6 flex flex-col flex-1">
-        <h3 className="font-display text-xl text-ink mb-1 leading-snug">{obituary.name}</h3>
-        <p className="font-body text-xs text-muted mb-4 tracking-wide">
-          {obituary.dateOfBirth} – {obituary.dateOfPassing}
-        </p>
+        <h3 className="font-display text-xl text-ink mb-1 leading-snug">
+          <Link to={tribute} className="hover:underline underline-offset-4">{obituary.name}</Link>
+        </h3>
+        <p className="font-body text-xs text-muted mb-4 tracking-wide">{lifespan(obituary)}</p>
 
-        <p className="font-body text-sm text-ink leading-relaxed mb-5 flex-1">
-          {obituary.shortBio}
-        </p>
+        <p className="font-body text-sm text-ink leading-relaxed mb-5 flex-1">{obituary.shortBio}</p>
 
-        <div className="space-y-2 mb-5 pb-5 border-b border-gray-100">
-          <div className="flex items-start gap-2">
-            <Calendar size={13} className="text-ink mt-0.5 flex-shrink-0" />
-            <span className="font-body text-xs text-ink">{obituary.serviceDate}</span>
+        {(when || obituary.serviceLocation) && (
+          <div className="space-y-2 mb-5 pb-5 border-b border-gray-100">
+            {when && (
+              <div className="flex items-start gap-2">
+                <Calendar size={13} className="text-ink mt-0.5 flex-shrink-0" aria-hidden="true" />
+                <span className="font-body text-xs text-ink">{when}</span>
+              </div>
+            )}
+            {obituary.serviceLocation && (
+              <div className="flex items-start gap-2">
+                <MapPin size={13} className="text-ink mt-0.5 flex-shrink-0" aria-hidden="true" />
+                <span className="font-body text-xs text-ink">{obituary.serviceLocation}</span>
+              </div>
+            )}
           </div>
-          <div className="flex items-start gap-2">
-            <Clock size={13} className="text-ink mt-0.5 flex-shrink-0" />
-            <span className="font-body text-xs text-ink">{obituary.serviceTime}</span>
-          </div>
-          <div className="flex items-start gap-2">
-            <MapPin size={13} className="text-ink mt-0.5 flex-shrink-0" />
-            <span className="font-body text-xs text-ink">{obituary.serviceLocation}</span>
-          </div>
-        </div>
+        )}
 
-        <div className="flex items-center gap-3 flex-wrap">
-          <button className="btn-primary text-xs py-2 px-4 flex items-center gap-1.5">
-            View Tribute
-          </button>
-          <button className="flex items-center gap-1.5 font-body text-xs text-ink hover:text-ink tracking-wide transition-colors font-bold">
-            <Heart size={13} />
-            Leave Condolence
-          </button>
-          {obituary.hasLivestream && (
-            <button
-              disabled
-              className="font-body text-xs text-muted tracking-wide cursor-not-allowed line-through"
-              title="Livestream not available for this service"
+        <div className="flex items-center gap-4 flex-wrap">
+          <Link to={tribute} className="btn-primary text-xs py-2 px-4">View Tribute</Link>
+          {obituary.livestreamEnabled && obituary.livestreamUrl && (
+            <a
+              href={obituary.livestreamUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 font-body text-xs text-ink hover:text-muted tracking-wide font-bold"
             >
+              <Video size={13} aria-hidden="true" />
               Watch Livestream
-            </button>
+            </a>
           )}
         </div>
       </div>

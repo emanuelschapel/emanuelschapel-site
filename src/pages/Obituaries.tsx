@@ -1,10 +1,13 @@
-import PageHero from '../components/sections/PageHero';
-import ObituaryCard from '../components/cards/ObituaryCard';
-import CTASection from '../components/sections/CTASection';
-import { obituaries } from '../data/obituaries';
 import { Link } from 'react-router-dom';
+import PageHero from '../components/sections/PageHero';
+import ObituaryGrid from '../components/cards/ObituaryGrid';
+import CTASection from '../components/sections/CTASection';
+import { fetchObituaries } from '../lib/sanity';
+import { useRemote } from '../lib/useSanity';
 
 export default function Obituaries() {
+  const obituaries = useRemote(() => fetchObituaries(), []);
+
   return (
     <main>
       <PageHero
@@ -13,25 +16,19 @@ export default function Obituaries() {
         imageSrc="/fleet_black_hearse_side_street.jpg"
       />
 
-      {/* Phase 2 note banner */}
       <div className="bg-blush border-b border-rule py-4 px-6">
         <div className="max-w-5xl mx-auto text-center">
           <p className="font-body text-sm text-muted">
             <span className="font-bold text-ink">Families:</span> To submit an obituary or tribute notice, please{' '}
-            <Link to="/contact?reason=obituary" className="text-ink underline">contact our team</Link>.{' '}
-            <span className="text-xs text-muted">Sample entries shown for demonstration. Online tribute management coming in a future update.</span>
+            <Link to="/contact?reason=obituary" className="text-ink underline">contact our team</Link>.
           </p>
         </div>
       </div>
 
       <section className="bg-white py-20 px-6">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {obituaries.map(obit => (
-              <ObituaryCard key={obit.id} obituary={obit} />
-            ))}
-          </div>
-          {/* FUTURE PHASE 2: Replace static grid with paginated API-driven list from CMS or obituary backend */}
+          <ObituaryGrid remote={obituaries} />
+
           <div className="mt-16 text-center bg-blush rounded-sm p-10">
             <h3 className="font-display text-xl text-ink mb-3">Don't See a Service Listed?</h3>
             <p className="font-body text-muted text-sm mb-6 max-w-md mx-auto">

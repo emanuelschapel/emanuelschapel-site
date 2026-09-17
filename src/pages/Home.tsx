@@ -3,10 +3,11 @@ import { Phone, Shield, Heart, Users, Star, ChevronRight } from 'lucide-react';
 import { Hero } from '../components/home/Hero';
 import CTASection from '../components/sections/CTASection';
 import ServiceCard from '../components/cards/ServiceCard';
-import ObituaryCard from '../components/cards/ObituaryCard';
+import ObituaryGrid from '../components/cards/ObituaryGrid';
 import ResourceCard from '../components/cards/ResourceCard';
 import { services } from '../data/services';
-import { obituaries } from '../data/obituaries';
+import { fetchObituaries } from '../lib/sanity';
+import { useRemote } from '../lib/useSanity';
 import { resources } from '../data/resources';
 import { PHONE, PHONE_HREF } from '../data/navigation';
 
@@ -30,6 +31,8 @@ const featuredServices = FEATURED_SERVICE_IDS.map(id => services.find(s => s.id 
 );
 
 export default function Home() {
+  // Three most recent; the full list lives on /obituaries.
+  const recentObituaries = useRemote(() => fetchObituaries(3), []);
   return (
     <main>
       {/* Ship "band" until the 2:1 (2400x1200) recomposition lands — the plinth would
@@ -148,13 +151,8 @@ export default function Home() {
               <div className="h-px w-12 bg-pink" />
             </div>
             <h2 className="section-title mb-4">Remembering Those We've Served</h2>
-            <p className="font-body text-muted italic text-sm">Sample entries shown for demonstration purposes.</p>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {obituaries.map(obit => (
-              <ObituaryCard key={obit.id} obituary={obit} />
-            ))}
-          </div>
+          <ObituaryGrid remote={recentObituaries} compact />
           <div className="text-center mt-10">
             <Link to="/obituaries" className="btn-outline">View All Obituaries</Link>
           </div>

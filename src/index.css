@@ -49,6 +49,14 @@
   .form-label {
     @apply block text-sm font-body font-bold text-ink mb-1 tracking-wide;
   }
+  /* Portable Text from Sanity on the tribute page */
+  .prose-obituary p { @apply mb-5; }
+  .prose-obituary h2 { @apply font-display text-2xl text-ink mt-10 mb-4; }
+  .prose-obituary h3 { @apply font-display text-xl text-ink mt-8 mb-3; }
+  .prose-obituary blockquote { @apply border-l-4 border-pink pl-5 italic text-muted my-6; }
+  .prose-obituary ul { @apply list-disc pl-6 mb-5 space-y-1; }
+  .prose-obituary ol { @apply list-decimal pl-6 mb-5 space-y-1; }
+  .prose-obituary a { @apply text-ink underline underline-offset-4; }
   .card-hover {
     @apply transition-all duration-300 hover:shadow-xl hover:-translate-y-1;
   }
