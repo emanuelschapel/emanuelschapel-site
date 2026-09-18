@@ -2,8 +2,14 @@ import { Link } from 'react-router-dom';
 import PageHero from '../components/sections/PageHero';
 import CTASection from '../components/sections/CTASection';
 import { services } from '../data/services';
+import { useSeo } from '../lib/seo';
 
 export default function Services() {
+  useSeo({
+    title: "Funeral Services — Burial, Cremation, Memorial | Emanuel's Chapel",
+    description: 'Burial, cremation, memorial and celebration-of-life services, veteran honors, transportation, and personalized tributes for Chicago families.',
+    path: '/services',
+  });
   return (
     <main>
       <PageHero

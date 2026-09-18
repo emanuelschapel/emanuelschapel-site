@@ -25,9 +25,24 @@
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
+# Security headers. The CSP is an allowlist of exactly what the site uses; adding a new
+# third-party embed (analytics, a chat widget, a different map) means adding its origin
+# here first or it will be silently blocked. Test locally with `npx netlify serve`.
+#
+#   script-src   own bundle only. No inline scripts exist (Vite emits a module file); the
+#                JSON-LD blocks are type=application/ld+json and are data, not scripts.
+#   style-src    own CSS, Google Fonts CSS, and 'unsafe-inline' because React sets a few
+#                style="" attributes (hero gradients). Attribute styles cannot run code.
+#   img-src      own images, data: URIs, and Sanity's image CDN for obituary portraits.
+#   connect-src  own origin (Netlify Forms POST) and the Sanity API/CDN for obituaries.
+#   frame-src    the Google Maps embed on /contact.
+#   frame-ancestors 'none' replaces X-Frame-Options: DENY (the modern equivalent).
 [[headers]]
   for = "/*"
   [headers.values]
+    Content-Security-Policy = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://cdn.sanity.io; connect-src 'self' https://*.apicdn.sanity.io https://*.api.sanity.io; frame-src https://www.google.com; frame-ancestors 'none'; form-action 'self'; base-uri 'self'; object-src 'none'; upgrade-insecure-requests"
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains"
     X-Content-Type-Options = "nosniff"
     X-Frame-Options = "DENY"
     Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()"

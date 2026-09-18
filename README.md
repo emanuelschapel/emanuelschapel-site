@@ -167,8 +167,12 @@ See `src/data/futurePhases.ts` for a complete integration map.
    not yet independently confirmed — Western at 51st sits near the 60609/60632 line. Office
    hours still open; site currently states 24/7 availability only.
 4. ~~Add Google Maps embed to Contact page~~ — done, keyless embed + Get directions link.
-5. ~~Add schema.org markup~~ — done: `FuneralHome` JSON-LD, injected into `<head>` at build
-   time from `site.ts` by the plugin in `vite.config.ts`. Still to add there once known:
-   `url`/`@id` (production domain), `logo`/`image` (need the domain), `openingHoursSpecification`
-   (office hours on hold), `sameAs` (social profiles).
+5. ~~Add schema.org markup~~ — done: `FuneralHome` JSON-LD injected at build from `site.ts`
+   (`vite.config.ts`). `url`/`logo` track Netlify's `URL` and switch to the custom domain
+   automatically. Still to add: `openingHoursSpecification` (hours on hold), `sameAs`.
+7. ~~SEO basics~~ — done 2026-09-18: per-route titles/descriptions/canonical/Open Graph via
+   `src/lib/seo.ts`; `robots.txt` + `sitemap.xml` generated at build (tribute pages listed
+   from Sanity); per-obituary `Person`/`Event` JSON-LD on tribute pages.
+8. ~~Security headers~~ — done 2026-09-18: CSP allowlist, HSTS, Permissions-Policy in
+   `netlify.toml`. Adding any new third-party embed means adding its origin to the CSP first.
 6. ~~Confirm phone number is active and monitored 24/7~~ — confirmed 2026-09-16.

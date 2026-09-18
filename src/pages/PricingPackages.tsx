@@ -3,6 +3,7 @@ import PageHero from '../components/sections/PageHero';
 import PricingRequestForm from '../components/forms/PricingRequestForm';
 import CTASection from '../components/sections/CTASection';
 import { PHONE, PHONE_HREF } from '../data/navigation';
+import { useSeo } from '../lib/seo';
 
 const pricingCategories = [
   {
@@ -32,6 +33,11 @@ const factors = [
 ];
 
 export default function PricingPackages() {
+  useSeo({
+    title: "Funeral Pricing & Packages | Emanuel's Chapel, Chicago",
+    description: "Honest guidance on funeral costs and service packages, and our General Price List on request. Emanuel's Chapel Funeral Home, Chicago.",
+    path: '/pricing',
+  });
   return (
     <main>
       <PageHero

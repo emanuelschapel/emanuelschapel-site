@@ -3,8 +3,55 @@ import { ArrowLeft, Calendar, MapPin, Video, Clock } from 'lucide-react';
 import { PortableText } from '@portabletext/react';
 import CTASection from '../components/sections/CTASection';
 import { PHONE, PHONE_HREF } from '../data/navigation';
-import { fetchObituary, imageUrl, lifespan, longDate, serviceWhen, sanityConfigured, MEMORIAL_IMAGE } from '../lib/sanity';
+import { fetchObituary, imageUrl, lifespan, longDate, serviceWhen, sanityConfigured, MEMORIAL_IMAGE, type Obituary } from '../lib/sanity';
 import { useRemote } from '../lib/useSanity';
+import { useSeo, SITE_URL } from '../lib/seo';
+import { site } from '../data/site';
+
+/**
+ * Structured data for one tribute: the person, and the service as an Event when a date
+ * is known. Lets search engines show the page for "[name] obituary" queries with the
+ * dates attached, and surface the service in date-aware results. Only published fields
+ * are included; nothing here is invented.
+ */
+function tributeJsonLd(o: Obituary): Record<string, unknown> {
+  const url = `${SITE_URL}/obituaries/${o.slug}`;
+  const person: Record<string, unknown> = {
+    '@type': 'Person',
+    name: o.name,
+    deathDate: o.dateOfPassing,
+    ...(o.dateOfBirth ? { birthDate: o.dateOfBirth } : {}),
+    ...(o.portrait ? { image: imageUrl(o.portrait.asset, 800) } : {}),
+  };
+  const organizer = { '@type': 'FuneralHome', '@id': `${SITE_URL}/#funeralhome`, name: site.legalName };
+  const graph: Record<string, unknown>[] = [
+    {
+      '@type': 'WebPage',
+      '@id': url,
+      url,
+      name: `${o.name} Obituary`,
+      description: o.shortBio,
+      about: person,
+      isPartOf: { '@id': `${SITE_URL}/#funeralhome` },
+    },
+  ];
+  if (o.serviceDate) {
+    graph.push({
+      '@type': 'Event',
+      name: `Funeral service for ${o.name}`,
+      startDate: o.serviceDate,
+      ...(o.serviceEnd ? { endDate: o.serviceEnd } : {}),
+      eventStatus: 'https://schema.org/EventScheduled',
+      eventAttendanceMode: o.livestreamEnabled && o.livestreamUrl
+        ? 'https://schema.org/MixedEventAttendanceMode'
+        : 'https://schema.org/OfflineEventAttendanceMode',
+      ...(o.serviceLocation ? { location: { '@type': 'Place', name: o.serviceLocation } } : {}),
+      organizer,
+      url,
+    });
+  }
+  return { '@context': 'https://schema.org', '@graph': graph };
+}
 
 /**
  * /obituaries/:slug — one person's tribute page.
@@ -17,6 +64,28 @@ import { useRemote } from '../lib/useSanity';
 export default function Tribute() {
   const { slug = '' } = useParams();
   const remote = useRemote(() => fetchObituary(slug), [slug]);
+
+  // Hooks run every render, so the <head> is derived from whatever state we are in.
+  // A missing or failed tribute is marked noindex so a dead link never gets indexed;
+  // while loading we say nothing about robots so a crawler's snapshot is not poisoned.
+  const found = remote.status === 'ready' ? remote.data : null;
+  useSeo(
+    found
+      ? {
+          title: `${found.name} Obituary — Emanuel's Chapel, Chicago`,
+          description: found.shortBio,
+          path: `/obituaries/${found.slug}`,
+          type: 'profile',
+          image: found.portrait ? imageUrl(found.portrait.asset, 1200, 630) : undefined,
+          jsonLd: tributeJsonLd(found),
+        }
+      : {
+          title: "Obituary | Emanuel's Chapel, Chicago",
+          description: "Obituaries and service details from Emanuel's Chapel Funeral Home, Chicago.",
+          path: `/obituaries/${slug}`,
+          noindex: remote.status !== 'loading',
+        },
+  );
 
   if (remote.status === 'loading') {
     return (

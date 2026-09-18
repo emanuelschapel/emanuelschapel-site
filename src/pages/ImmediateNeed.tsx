@@ -2,6 +2,7 @@ import { Phone } from 'lucide-react';
 import PageHero from '../components/sections/PageHero';
 import ImmediateNeedForm from '../components/forms/ImmediateNeedForm';
 import { PHONE, PHONE_HREF } from '../data/navigation';
+import { useSeo } from '../lib/seo';
 
 const steps = [
   { num: 1, title: 'Call Emanuel\'s Chapel', desc: 'Our team is available 24 hours a day, 7 days a week. We will answer your call with care and without pressure.' },
@@ -12,6 +13,11 @@ const steps = [
 ];
 
 export default function ImmediateNeed() {
+  useSeo({
+    title: "Immediate Need — 24/7 Help | Emanuel's Chapel, Chicago",
+    description: "If a death has just occurred, call Emanuel's Chapel now at (773) 912-6745. We answer around the clock and guide Chicago families through every next step.",
+    path: '/immediate-need',
+  });
   return (
     <main>
       <PageHero

@@ -10,3 +10,6 @@ interface ImportMetaEnv {
 interface ImportMeta {
   readonly env: ImportMetaEnv;
 }
+
+/** Absolute site origin, no trailing slash. Baked at build from Netlify's URL — see vite.config.ts. */
+declare const __SITE_URL__: string;

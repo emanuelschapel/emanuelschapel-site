@@ -2,6 +2,7 @@ import { CheckCircle } from 'lucide-react';
 import PageHero from '../components/sections/PageHero';
 import PlanningForm from '../components/forms/PlanningForm';
 import CTASection from '../components/sections/CTASection';
+import { useSeo } from '../lib/seo';
 
 const benefits = [
   { title: 'Reduces Emotional Burden', desc: 'Your family will not need to make difficult decisions under the pressure of grief. Your wishes are already documented.' },
@@ -23,6 +24,11 @@ const checklist = [
 ];
 
 export default function PlanningAhead() {
+  useSeo({
+    title: "Pre-Planning a Funeral | Emanuel's Chapel, Chicago",
+    description: "Plan ahead with a confidential consultation. Document your wishes and relieve your family of difficult decisions. Emanuel's Chapel, Chicago.",
+    path: '/planning-ahead',
+  });
   return (
     <main>
       <PageHero

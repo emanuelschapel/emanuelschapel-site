@@ -2,6 +2,7 @@ import PageHero from '../components/sections/PageHero';
 import { Button } from '../components/ui/Button';
 import CTASection from '../components/sections/CTASection';
 import { site } from '../data/site';
+import { useSeo } from '../lib/seo';
 
 /** The "Our Team" grid is hidden until the client confirms names and titles. Flip to show. */
 const SHOW_TEAM = false;
@@ -37,6 +38,11 @@ const values = [
 ];
 
 export default function About() {
+  useSeo({
+    title: "About Emanuel's Chapel — Family-Owned Since 1991 | South Side Chicago",
+    description: "Meet Emanuel Jones and the chapel that has served Chicago's South Side since 1991: our story, our values, and our facility on S. Western Ave.",
+    path: '/about',
+  });
   return (
     <main>
       <PageHero
