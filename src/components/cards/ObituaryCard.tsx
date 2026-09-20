@@ -1,6 +1,6 @@
 import { Calendar, MapPin, Video } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { imageUrl, lifespan, serviceWhen, MEMORIAL_IMAGE, type ObituarySummary } from '../../lib/sanity';
+import { imageUrl, lifespan, serviceWhen, livestreamHref, MEMORIAL_IMAGE, type ObituarySummary } from '../../lib/sanity';
 
 interface ObituaryCardProps {
   obituary: ObituarySummary;
@@ -10,6 +10,7 @@ export default function ObituaryCard({ obituary }: ObituaryCardProps) {
   const tribute = `/obituaries/${obituary.slug}`;
   const portrait = obituary.portrait ? imageUrl(obituary.portrait.asset, 640, 480) : undefined;
   const when = serviceWhen(obituary);
+  const stream = obituary.livestreamEnabled ? livestreamHref(obituary.livestreamUrl) : undefined;
 
   return (
     <article className="bg-white border border-gray-100 rounded-sm overflow-hidden card-hover flex flex-col" aria-label={`Obituary for ${obituary.name}`}>
@@ -51,9 +52,9 @@ export default function ObituaryCard({ obituary }: ObituaryCardProps) {
 
         <div className="flex items-center gap-4 flex-wrap">
           <Link to={tribute} className="btn-primary text-xs py-2 px-4">View Tribute</Link>
-          {obituary.livestreamEnabled && obituary.livestreamUrl && (
+          {stream && (
             <a
-              href={obituary.livestreamUrl}
+              href={stream}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-1.5 font-body text-xs text-ink hover:text-muted tracking-wide font-bold"

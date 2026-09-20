@@ -50,6 +50,24 @@ export function imageUrl(source: SanityImageSource, width: number, height?: numb
 
 // ----------------------------------------------------------------------------------------
 
+/**
+ * The livestream link as an href. Editors paste links as people write them —
+ * "youtube.com/live/abc" — and the Studio accepts that; this is where the scheme is added.
+ * Always https: a livestream host without TLS is not something to send a family to.
+ * Returns undefined for an empty or unusable value so callers render no button at all.
+ */
+export function livestreamHref(value: string | undefined | null): string | undefined {
+  const v = (value ?? '').trim();
+  if (!v) return undefined;
+  const withScheme = /^https?:\/\//i.test(v) ? v.replace(/^http:\/\//i, 'https://') : `https://${v}`;
+  try {
+    const u = new URL(withScheme);
+    return u.protocol === 'https:' && u.hostname.includes('.') ? u.href : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
 /** Portable Text block — kept loose; rendered by PortableText, not read by hand. */
 export type PortableTextBlock = Record<string, unknown>;
 

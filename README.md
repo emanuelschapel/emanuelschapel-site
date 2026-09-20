@@ -16,15 +16,15 @@
 ## Brand Palette
 Production tokens (Sept 2026). The prototype's fuchsia/plum palette is retired — see
 `tailwind.config.ts`. Rule that must survive every edit: **pink never carries white text**
-(`#FDA8BF` on white is 1.75:1; on `#141414` it is ~11:1).
+(`#FF96C5` on white is 2.0:1; on `#141414` it is ~9:1).
 
 | Role | Token | Hex |
 |------|-------|-----|
 | Primary text, CTA fill, dark surfaces | `ink` | `#141414` |
 | Ink hover | `ink-soft` | `#2A2628` |
-| Brand accent (always with ink text) | `pink` | `#FDA8BF` |
-| Accent hover | `pink-deep` | `#F98CA9` |
-| Light accent tint | `pink-wash` | `#FDE3EA` |
+| Brand accent (always with ink text) | `pink` | `#FF96C5` |
+| Accent hover | `pink-deep` | `#FF7AB6` |
+| Light accent tint | `pink-wash` | `#FFE0EE` |
 | Section background | `blush` | `#FBEEF1` |
 | Page background | `ivory` | `#FCFAF9` |
 | Secondary text | `muted` | `#5C5559` |

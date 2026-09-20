@@ -121,7 +121,7 @@ export default function About() {
       <section className="relative bg-ink overflow-hidden py-20 lg:py-28 px-6" aria-labelledby="owner-heading">
         <div
           className="pointer-events-none absolute inset-0 opacity-[0.09]"
-          style={{ backgroundImage: 'radial-gradient(circle at 24% 45%, #FDA8BF 0%, transparent 62%)' }}
+          style={{ backgroundImage: 'radial-gradient(circle at 24% 45%, #FF96C5 0%, transparent 62%)' }}
           aria-hidden="true"
         />
 

@@ -9,9 +9,9 @@
     </radialGradient>
     <!-- outer halo: brand pink fading to nothing -->
     <radialGradient id="halo" cx="50%" cy="50%" r="50%">
-      <stop offset="0" stop-color="#FDA8BF" stop-opacity="0.55"/>
-      <stop offset="0.35" stop-color="#FDA8BF" stop-opacity="0.18"/>
-      <stop offset="1" stop-color="#FDA8BF" stop-opacity="0"/>
+      <stop offset="0" stop-color="#FF96C5" stop-opacity="0.55"/>
+      <stop offset="0.35" stop-color="#FF96C5" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="#FF96C5" stop-opacity="0"/>
     </radialGradient>
     <!-- inner glow: warm gold -->
     <radialGradient id="glow" cx="50%" cy="50%" r="50%">
@@ -23,7 +23,7 @@
     <linearGradient id="flame" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="#FFF6DC"/>
       <stop offset="0.45" stop-color="#FFD27A"/>
-      <stop offset="1" stop-color="#F98CA9"/>
+      <stop offset="1" stop-color="#FF7AB6"/>
     </linearGradient>
     <linearGradient id="flameCore" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="#FFFFFF"/>
@@ -51,7 +51,7 @@
   <rect width="800" height="600" fill="url(#ground)"/>
 
   <!-- light on the surface the candle stands on -->
-  <ellipse cx="400" cy="548" rx="230" ry="26" fill="#FDA8BF" opacity="0.10" filter="url(#softer)"/>
+  <ellipse cx="400" cy="548" rx="230" ry="26" fill="#FF96C5" opacity="0.10" filter="url(#softer)"/>
 
   <!-- halo and glow around the flame -->
   <circle cx="400" cy="235" r="240" fill="url(#halo)"/>
@@ -83,7 +83,7 @@
   <ellipse cx="400" cy="245" rx="34" ry="46" fill="#FFE6B0" opacity="0.25" filter="url(#soft)"/>
 
   <!-- a quiet laurel pair, echoing the wreath on the reception wall -->
-  <g fill="none" stroke="#FDA8BF" stroke-opacity="0.28" stroke-width="2" stroke-linecap="round">
+  <g fill="none" stroke="#FF96C5" stroke-opacity="0.28" stroke-width="2" stroke-linecap="round">
     <path d="M250 470 q-40 -60 -20 -130"/>
     <path d="M550 470 q40 -60 20 -130"/>
     <g stroke-width="1.6">

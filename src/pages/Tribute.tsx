@@ -3,7 +3,7 @@ import { ArrowLeft, Calendar, MapPin, Video, Clock } from 'lucide-react';
 import { PortableText } from '@portabletext/react';
 import CTASection from '../components/sections/CTASection';
 import { PHONE, PHONE_HREF } from '../data/navigation';
-import { fetchObituary, imageUrl, lifespan, longDate, serviceWhen, sanityConfigured, MEMORIAL_IMAGE, type Obituary } from '../lib/sanity';
+import { fetchObituary, imageUrl, lifespan, longDate, serviceWhen, livestreamHref, sanityConfigured, MEMORIAL_IMAGE, type Obituary } from '../lib/sanity';
 import { useRemote } from '../lib/useSanity';
 import { useSeo, SITE_URL } from '../lib/seo';
 import { site } from '../data/site';
@@ -42,7 +42,7 @@ function tributeJsonLd(o: Obituary): Record<string, unknown> {
       startDate: o.serviceDate,
       ...(o.serviceEnd ? { endDate: o.serviceEnd } : {}),
       eventStatus: 'https://schema.org/EventScheduled',
-      eventAttendanceMode: o.livestreamEnabled && o.livestreamUrl
+      eventAttendanceMode: o.livestreamEnabled && livestreamHref(o.livestreamUrl)
         ? 'https://schema.org/MixedEventAttendanceMode'
         : 'https://schema.org/OfflineEventAttendanceMode',
       ...(o.serviceLocation ? { location: { '@type': 'Place', name: o.serviceLocation } } : {}),
@@ -118,6 +118,7 @@ export default function Tribute() {
   const portrait = o.portrait ? imageUrl(o.portrait.asset, 800, 1000) : undefined;
   const when = serviceWhen(o);
   const hasService = when || o.serviceLocation || o.visitation;
+  const stream = o.livestreamEnabled ? livestreamHref(o.livestreamUrl) : undefined;
 
   return (
     <main className="bg-ivory">
@@ -192,9 +193,9 @@ export default function Tribute() {
                 <p className="font-body text-sm text-muted">Service details will be posted here. Please call <a href={PHONE_HREF} className="font-bold text-ink underline">{PHONE}</a> for information.</p>
               )}
 
-              {o.livestreamEnabled && o.livestreamUrl && (
+              {stream && (
                 <a
-                  href={o.livestreamUrl}
+                  href={stream}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="btn-primary mt-6 w-full text-center flex items-center justify-center gap-2"

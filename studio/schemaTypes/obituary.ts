@@ -115,13 +115,25 @@ export default defineType({
     defineField({
       name: 'livestreamUrl',
       title: 'Livestream link',
-      type: 'url',
+      // A plain string, not Sanity's `url` type: that type refuses anything without
+      // "https://" in front, so pasting "youtube.com/live/abc" blocked the whole document
+      // from saving. This accepts the link as people actually paste it; the website adds
+      // https:// itself when it builds the button (see livestreamHref in src/lib/sanity.ts).
+      type: 'string',
       group: 'livestream',
+      description: 'Paste the link as-is — "youtube.com/live/…", "facebook.com/…", with or without https://.',
       hidden: ({ document }) => !document?.livestreamEnabled,
       validation: r =>
-        r.uri({ scheme: ['https'] }).custom((url, ctx) => {
+        r.custom((value, ctx) => {
           const on = (ctx.document as { livestreamEnabled?: boolean } | undefined)?.livestreamEnabled;
-          return on && !url ? 'Add the livestream link, or turn the livestream off.' : true;
+          const v = (value ?? '').trim();
+          if (!on) return true;
+          if (!v) return 'Add the livestream link, or turn the livestream off.';
+          // something.tld[/path] — with or without a scheme; no spaces
+          if (!/^(https?:\/\/)?[a-z0-9-]+(\.[a-z0-9-]+)+(\/\S*)?$/i.test(v)) {
+            return 'That does not look like a web address. Example: youtube.com/live/abc123';
+          }
+          return true;
         }),
     }),
   ],

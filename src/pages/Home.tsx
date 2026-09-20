@@ -168,7 +168,7 @@ export default function Home() {
       {/* Planning Ahead */}
       <section className="bg-ink py-20 px-6 relative overflow-hidden">
         <div className="absolute inset-0 opacity-5"
-          style={{ backgroundImage: 'radial-gradient(circle at 60% 50%, #FDA8BF 0%, transparent 70%)' }} />
+          style={{ backgroundImage: 'radial-gradient(circle at 60% 50%, #FF96C5 0%, transparent 70%)' }} />
         <div className="relative max-w-5xl mx-auto text-center">
           <div className="flex items-center justify-center gap-4 mb-6">
             <div className="h-px w-12 bg-pink" />

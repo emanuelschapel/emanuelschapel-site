@@ -19,9 +19,9 @@ const config: Config = {
           soft: "#2A2628", // hover state for ink buttons
         },
         pink: {
-          DEFAULT: "#FDA8BF", // brand accent. Always paired with `ink` text — never white.
-          deep: "#F98CA9", // hover state
-          wash: "#FDE3EA", // light tint for subtle highlights
+          DEFAULT: "#FF96C5", // brand accent. Always paired with `ink` text — never white.
+          deep: "#FF7AB6", // hover state
+          wash: "#FFE0EE", // light tint for subtle highlights
         },
         blush: "#FBEEF1", // section backgrounds
         ivory: "#FCFAF9", // page background
