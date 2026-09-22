@@ -25,45 +25,69 @@ const NETWORKS = [
   { key: 'tiktok', label: 'TikTok', url: site.social.tiktok.url },
 ].filter(n => n.url);
 
+const PHONE_IMG = '/images/social/instagram-phone.webp';
+
 /**
- * "Follow along" band for the foot of the Contact page: the three profiles as marks,
- * nothing more. It replaced a full-width Instagram pitch with a phone mockup — a lot of
- * page for one link, and the mockup showed a handle that was never the live account.
+ * "Follow along" band for the Contact page. Sits between the contact form and the footer;
+ * the phone's lower third is clipped by the section edge so it reads as rising into the
+ * page rather than pasted on it.
+ *
+ * The phone is DECORATION (alt=""), never the link itself: the handle and follower counts
+ * rendered on its screen are an illustration — and the screen shows a handle that is NOT
+ * the live account (see site.ts). The real profiles are the marks below the copy.
+ * TODO (client): replace the screen with a screenshot of the real profile once Lakedia
+ * supplies one.
  */
 export default function FollowSocial() {
-  if (NETWORKS.length === 0) return null;
-
   return (
-    <section aria-labelledby="follow-heading" className="bg-blush border-t border-rule py-16 px-6">
-      <div className="max-w-3xl mx-auto text-center">
-        <div className="flex items-center justify-center gap-4 mb-5">
-          <div className="h-px w-10 bg-pink" />
-          <span className="text-ink text-xs tracking-[0.4em] font-body uppercase">Follow along</span>
-          <div className="h-px w-10 bg-pink" />
+    <section aria-labelledby="follow-heading" className="relative overflow-hidden bg-blush border-t border-rule">
+      <div className="max-w-6xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-[1fr_minmax(0,22rem)] gap-x-12 items-end">
+        <div className="pt-16 pb-6 lg:pb-20">
+          <div className="flex items-center gap-3 mb-5">
+            <div className="h-px w-8 bg-pink" />
+            <span className="text-ink text-xs tracking-[0.4em] font-body uppercase">Follow along</span>
+          </div>
+          <h2 id="follow-heading" className="section-title mb-5 max-w-xl">
+            Moments of remembrance, shared with our community.
+          </h2>
+          <p className="font-body text-muted leading-relaxed max-w-lg mb-8">
+            Service announcements, community events, and the families we have the privilege to serve —
+            follow Emanuel's Chapel.
+          </p>
+
+          {NETWORKS.length > 0 && (
+            <ul className="flex items-center gap-4">
+              {NETWORKS.map(n => (
+                <li key={n.key}>
+                  <a
+                    href={n.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`Emanuel's Chapel on ${n.label}`}
+                    className="flex h-14 w-14 items-center justify-center rounded-full bg-white border border-rule text-ink shadow-sm transition-colors hover:bg-pink hover:border-pink focus-visible:bg-pink focus-visible:border-pink"
+                  >
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                      <path d={GLYPH[n.key]} />
+                    </svg>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
-        <h2 id="follow-heading" className="section-title mb-4">
-          Moments of remembrance, shared with our community.
-        </h2>
-        <p className="font-body text-muted leading-relaxed max-w-xl mx-auto mb-9">
-          Service announcements, community events, and the families we have the privilege to serve.
-        </p>
-        <ul className="flex items-center justify-center gap-5">
-          {NETWORKS.map(n => (
-            <li key={n.key}>
-              <a
-                href={n.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={`Emanuel's Chapel on ${n.label}`}
-                className="flex h-14 w-14 items-center justify-center rounded-full bg-white border border-rule text-ink shadow-sm transition-colors hover:bg-pink hover:border-pink focus-visible:bg-pink focus-visible:border-pink"
-              >
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                  <path d={GLYPH[n.key]} />
-                </svg>
-              </a>
-            </li>
-          ))}
-        </ul>
+
+        {/* The phone. Its lower third is clipped by the section so it reads as rising into
+            the page rather than pasted on it. */}
+        <div className="relative h-[240px] lg:h-[360px]" aria-hidden="true">
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/3 h-[420px] w-[420px] rounded-full bg-pink/35 blur-3xl" />
+          <img
+            src={PHONE_IMG}
+            alt=""
+            className="absolute left-1/2 -translate-x-1/2 top-0 lg:top-8 w-[240px] lg:w-[290px] drop-shadow-[0_30px_40px_rgba(20,20,20,0.35)]"
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
       </div>
     </section>
   );
