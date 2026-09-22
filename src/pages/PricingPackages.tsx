@@ -1,6 +1,7 @@
 import { Info } from 'lucide-react';
 import PageHero from '../components/sections/PageHero';
 import PricingRequestForm from '../components/forms/PricingRequestForm';
+import PackageTiers from '../components/sections/PackageTiers';
 import CTASection from '../components/sections/CTASection';
 import { PHONE, PHONE_HREF } from '../data/navigation';
 import { useSeo } from '../lib/seo';
@@ -57,12 +58,14 @@ export default function PricingPackages() {
         </div>
       </section>
 
+      <PackageTiers />
+
       {/* Service overviews */}
       <section className="bg-white py-20 px-6">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-14">
             <h2 className="section-title mb-4">Service Options Overview</h2>
-            <p className="section-subtitle max-w-xl mx-auto">We do not publish flat prices online because every family's needs are unique. The information below will help you understand what each type of service includes.</p>
+            <p className="section-subtitle max-w-xl mx-auto">Beyond the packages above, every service can be shaped to a family's wishes. The overview below explains what each type of service involves.</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {pricingCategories.map(cat => (
@@ -98,16 +101,11 @@ export default function PricingPackages() {
               </div>
             ))}
           </div>
-          <div className="mt-10 bg-white border-l-4 border-pink p-6 rounded-sm">
-            <p className="font-body text-sm text-ink leading-relaxed">
-              <strong className="text-ink">FTC Funeral Rule:</strong> Funeral homes are required by the Federal Trade Commission to provide an itemized General Price List upon request. You may request Emanuel's Chapel's General Price List at any time — in person, by phone, or through the form below.
-            </p>
-          </div>
         </div>
       </section>
 
       {/* Form */}
-      <section className="bg-white py-20 px-6">
+      <section id="pricing-form" className="bg-white py-20 px-6 scroll-mt-32">
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="section-title mb-4">Request Pricing Information</h2>
