@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { CheckCircle } from 'lucide-react';
 import { PHONE, PHONE_HREF } from '../../data/navigation';
 import { validateForm, focusFirstError, inputProps, type Errors, type FormSpec } from '../../lib/formValidation';
@@ -6,6 +7,7 @@ import FieldError from './FieldError';
 import FormStatus from './FormStatus';
 import Honeypot from './Honeypot';
 import { submitForm, type SubmitStatus } from '../../lib/formSubmission';
+import { PACKAGES, toPackageId } from '../../data/packages';
 
 const SPEC: FormSpec = {
   name:  { id: 'pr-name',  label: 'Full name',     rules: ['required'] },
@@ -19,6 +21,14 @@ export default function PricingRequestForm() {
   const [status, setStatus] = useState<SubmitStatus>('idle');
   const [sendError, setSendError] = useState<string>();
   const [form, setForm] = useState({ name:'', phone:'', email:'', interest:'', wantGPL:'yes', message:'' });
+  // Package arrives from the "Choose Silver" / "Ask about Gold" buttons as ?package=<id>.
+  // Derived from the URL each render rather than copied into state, so clicking a
+  // different package button updates the select; once the visitor picks, their choice wins.
+  const [params] = useSearchParams();
+  const prefilledPackage = toPackageId(params.get('package'));
+  const [chosenPackage, setChosenPackage] = useState<string | null>(null);
+  const pkg = chosenPackage ?? prefilledPackage;
+
   const set = (f:string) => (e:React.ChangeEvent<HTMLInputElement|HTMLTextAreaElement|HTMLSelectElement>) => { setForm(p=>({...p,[f]:e.target.value})); setErrors(p => (p[f] ? { ...p, [f]: '' } : p)); }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -31,7 +41,7 @@ export default function PricingRequestForm() {
     }
     setStatus('sending');
     setSendError(undefined);
-    const outcome = await submitForm('pricing', form);
+    const outcome = await submitForm('pricing', { ...form, package: pkg });
     if (!outcome.ok) {
       setStatus('error');
       setSendError(outcome.error);
@@ -68,6 +78,16 @@ export default function PricingRequestForm() {
         <label htmlFor="pr-email" className="form-label">Email Address <span className="text-danger">*</span></label>
         <input id="pr-email" type="email" required value={form.email} onChange={set('email')} {...inputProps('pr-email', errors.email)} />
         <FieldError fieldId="pr-email" message={errors.email} />
+      </div>
+      <div>
+        <label htmlFor="pr-package" className="form-label">Package of Interest</label>
+        <select id="pr-package" value={pkg} onChange={e => setChosenPackage(e.target.value)} className="form-input">
+          <option value="">Please select</option>
+          {PACKAGES.map(p => (
+            <option key={p.id} value={p.id}>{p.name} — ${p.price.toLocaleString('en-US')}</option>
+          ))}
+          <option value="unsure">Not sure yet</option>
+        </select>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
