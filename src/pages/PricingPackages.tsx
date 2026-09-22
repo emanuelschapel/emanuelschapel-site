@@ -40,10 +40,17 @@ export default function PricingPackages() {
   });
   return (
     <main>
+      {/* Client artwork (Sept 2026) with its baked-in text cleared so the headline is live
+          copy — same treatment as the Obituaries hero: functional label as the eyebrow, the
+          artwork's own sentiment as the h1. Pale sky and blossom, so it takes the light tone. */}
       <PageHero
-        title="Pricing & Service Packages"
-        subtitle="Transparent guidance on service options and costs — because every family deserves clear, honest information."
-        imageSrc="/chapel_interior_main_seating_gray_chairs.jpg"
+        eyebrow="Pricing & Service Packages"
+        title="Every Moment Matters"
+        subtitle="Compassionate professionals are here for you — with clear, honest guidance on service options and costs."
+        imageSrc="/images/heroes/pricing-backdrop.jpg"
+        focal="center 12%"
+        tone="light"
+        align="center"
       />
 
       {/* Transparency note */}

@@ -12,7 +12,9 @@ export default function ResourceCard({ resource, variant = 'card' }: ResourceCar
 
   if (variant === 'card') {
     return (
-      <article className="bg-white border border-gray-100 rounded-sm p-8 card-hover">
+      // id + scroll-mt so deep links like /resources#veterans-benefits land with the card's
+      // title visible below the sticky header (same device as the Services cards).
+      <article id={resource.id} className="scroll-mt-32 bg-white border border-gray-100 rounded-sm p-8 card-hover">
         <div className="flex items-start gap-4 mb-4">
           <span className="text-2xl text-ink" aria-hidden="true">{resource.icon}</span>
           <h3 className="font-display text-lg text-ink leading-snug">{resource.title}</h3>

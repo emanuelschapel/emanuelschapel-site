@@ -5,6 +5,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { PHONE, PHONE_HREF, ADDRESS, HOURS_NOTE, ADDRESS_NOTE } from '../data/navigation';
 import { site } from '../data/site';
 import { useSeo } from '../lib/seo';
+import FollowInstagram from '../components/sections/FollowInstagram';
 
 /**
  * Business name + address, so Google shows the listing card rather than a bare pin.
@@ -26,10 +27,14 @@ export default function Contact() {
   const { search } = useLocation();
   return (
     <main>
+      {/* Illustrated front entrance (client-supplied, Sept 2026). Pale, blossom-lit artwork,
+          so it takes the light treatment: the standard ink overlay turned it to dusk. */}
       <PageHero
         title="Contact Emanuel's Chapel"
         subtitle="We are here for you. Reach out by phone, form, or visit — we will respond with care."
-        imageSrc="/facility_front_exterior_signage.jpg"
+        imageSrc="/images/heroes/contact-front-entrance.jpg"
+        focal="center 42%"
+        tone="light"
       />
 
       {/* Immediate CTA */}
@@ -130,6 +135,8 @@ export default function Contact() {
           </div>
         </div>
       </section>
+
+      <FollowInstagram />
     </main>
   );
 }

@@ -16,10 +16,17 @@ export default function Obituaries() {
 
   return (
     <main>
+      {/* Client-supplied artwork with its baked-in headline and button lifted out, so the
+          words are real text: editable, readable by assistive tech, crisp at any size.
+          The h1 is the artwork's own line; the eyebrow keeps the page's name visible. */}
       <PageHero
-        title="Obituaries & Tribute Notices"
+        eyebrow="Obituaries & Tribute Notices"
+        title="Remembering With Love"
         subtitle="Honoring the lives and legacies of those we have had the privilege to serve."
-        imageSrc="/fleet_black_hearse_side_street.jpg"
+        imageSrc="/images/heroes/obituaries-backdrop.jpg"
+        focal="center 40%"
+        tone="light"
+        align="center"
       />
 
       <div className="bg-blush border-b border-rule py-4 px-6">
