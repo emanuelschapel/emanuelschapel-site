@@ -14,7 +14,7 @@ const HONORS = [
  */
 export default function VeteranHonorsBand() {
   return (
-    <section id="veteran-honors" aria-labelledby="veteran-heading" className="bg-white py-20 px-6 scroll-mt-32">
+    <section id="veteran" aria-labelledby="veteran-heading" className="bg-white py-20 px-6 scroll-mt-32">
       <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] gap-12 lg:gap-16 items-center">
         <div className="relative">
           {/* Offset pink hairline — the same device the tribute page uses for the portrait. */}

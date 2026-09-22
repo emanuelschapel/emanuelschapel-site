@@ -5,6 +5,14 @@ import { services } from '../data/services';
 import { useSeo } from '../lib/seo';
 import VeteranHonorsBand from '../components/sections/VeteranHonorsBand';
 
+/**
+ * Veteran services have their own section below the grid (VeteranHonorsBand), so the grid
+ * skips that card: showing it twice was redundant, and seven cards in two columns left an
+ * orphan. The entry stays in services.ts — the contact form's "Which service?" list and the
+ * band itself both read it.
+ */
+const gridServices = services.filter(s => s.id !== 'veteran');
+
 export default function Services() {
   useSeo({
     title: "Funeral Services — Burial, Cremation, Memorial | Emanuel's Chapel",
@@ -37,7 +45,7 @@ export default function Services() {
       <section className="bg-blush py-16 px-6">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {services.map(service => (
+            {gridServices.map(service => (
               <article
                 key={service.id}
                 id={service.id}
