@@ -20,11 +20,17 @@ export default function ImmediateNeed() {
   });
   return (
     <main>
+      {/* Daylight key like every other banner. The photograph was shot dark; it is graded
+          up and its defocused flank extended to ~2.45:1 rather than swapped, because no
+          photograph in the library matches this palette. The urgency is carried by the
+          pink call-now band directly below, not by a black hero. */}
       <PageHero
+        eyebrow="Immediate Need"
         title="We Are Here for You Right Now"
         subtitle="You don't have to face this moment alone. Our team is available around the clock to guide you with compassion and clarity."
-        imageSrc="/supportive_hands_family_care.jpg"
-        isUrgent
+        imageSrc="/images/heroes/immediate-hands.jpg"
+        focal="72% center"
+        tone="light"
       />
 
       {/* Urgent Phone CTA */}

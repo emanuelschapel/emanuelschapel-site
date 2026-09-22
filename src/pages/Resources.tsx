@@ -14,10 +14,15 @@ export default function Resources() {
   });
   return (
     <main>
+      {/* The chapel itself, graded to the daylight key. Cropped rather than extended: the
+          room is in perspective, so a mirrored flank reads as a smear. */}
       <PageHero
+        eyebrow="Family Resources"
         title="Family Resources & FAQ"
         subtitle="Helpful guidance before, during, and after funeral planning — because knowledge brings comfort."
-        imageSrc="/supportive_hands_family_care.jpg"
+        imageSrc="/images/heroes/resources-chapel.jpg"
+        focal="center 55%"
+        tone="light"
       />
 
       {/* Resource Cards */}

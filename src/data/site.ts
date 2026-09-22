@@ -34,6 +34,9 @@ export const site = {
   social: {
     instagram: { handle: 'emanuelschapel2024', url: 'https://www.instagram.com/emanuelschapel2024' },
     facebook: { url: 'https://m.facebook.com/Emanuels-Chapel-Funeral-Home-2346587382332548/' },
+    // TODO (client): TikTok profile URL. FollowSocial renders only the networks that have
+    // one, so filling this in is the whole change — the icon appears on its own.
+    tiktok: { url: '' },
   },
 } as const;
 

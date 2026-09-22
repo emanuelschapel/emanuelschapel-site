@@ -5,7 +5,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { PHONE, PHONE_HREF, ADDRESS, HOURS_NOTE, ADDRESS_NOTE } from '../data/navigation';
 import { site } from '../data/site';
 import { useSeo } from '../lib/seo';
-import FollowInstagram from '../components/sections/FollowInstagram';
+import FollowSocial from '../components/sections/FollowSocial';
 
 /**
  * Business name + address, so Google shows the listing card rather than a bare pin.
@@ -136,7 +136,7 @@ export default function Contact() {
         </div>
       </section>
 
-      <FollowInstagram />
+      <FollowSocial />
     </main>
   );
 }

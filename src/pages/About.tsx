@@ -57,15 +57,19 @@ export default function About() {
         tone="light"
       />
 
-      {/* Our Story */}
+      {/* Our Story — centred prose, matching how the other pages set a block of body copy.
+          The three facility photographs that sat beside it are gone; the page now carries
+          its imagery in the hero and the owner's portrait instead. Paragraphs stay
+          left-aligned on phones, where centred body text is hard to read. */}
       <section className="bg-white py-20 px-6">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          <div>
-            <div className="flex items-center gap-3 mb-5">
-              <div className="h-px w-8 bg-pink" />
-              <span className="text-ink text-xs tracking-[0.4em] font-body uppercase">Our Story</span>
-            </div>
-            <h2 className="section-title mb-6">Serving Chicago Families with Care Since 1991</h2>
+        <div className="max-w-3xl mx-auto text-center">
+          <div className="flex items-center justify-center gap-4 mb-5">
+            <div className="h-px w-10 bg-pink" />
+            <span className="text-ink text-xs tracking-[0.4em] font-body uppercase">Our Story</span>
+            <div className="h-px w-10 bg-pink" />
+          </div>
+          <h2 className="section-title mb-6">Serving Chicago Families with Care Since 1991</h2>
+          <div className="text-left sm:text-center">
             <p className="font-body text-muted leading-relaxed mb-5">
               Emanuel's Chapel Funeral Home was established to bring compassionate, professional funeral care to the Chicago community. What began as a commitment to dignified service has grown into a trusted institution — one that families turn to in their most vulnerable moments with confidence and trust.
             </p>
@@ -75,25 +79,6 @@ export default function About() {
             <p className="font-body text-muted leading-relaxed">
               From the warmth of our chapel to the professionalism of our fleet, every detail of Emanuel's Chapel reflects our commitment to the families we serve and the community we call home.
             </p>
-          </div>
-          <div className="space-y-4">
-            <img
-              src="/facility_front_exterior_signage.jpg"
-              alt="Emanuel's Chapel Funeral Home exterior"
-              className="w-full h-56 object-cover rounded-sm shadow-md"
-            />
-            <div className="grid grid-cols-2 gap-4">
-              <img
-                src="/chapel_interior_extended_seating_view.jpg"
-                alt="Chapel interior"
-                className="w-full h-40 object-cover rounded-sm shadow-md"
-              />
-              <img
-                src="/chapel_casket_display_gold_drapes.jpg"
-                alt="Chapel display"
-                className="w-full h-40 object-cover rounded-sm shadow-md"
-              />
-            </div>
           </div>
         </div>
       </section>
