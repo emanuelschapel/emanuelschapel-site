@@ -34,11 +34,14 @@ export const sanity = sanityConfigured
 const builder = sanity ? imageUrlBuilder(sanity) : null;
 
 /**
- * Shown wherever a portrait would go when the family has not supplied one: a single lit
- * candle in the brand palette. A vector, so it is crisp at any size and never reads as
- * stock. Decorative — the name always sits beside it, so it carries alt="".
+ * Shown wherever a portrait would go when the family has not supplied one: a lit candle
+ * among pink calla lilies (client-supplied artwork, Sept 2026). One square file; each
+ * placement crops it with `object-fit: cover` and its own focal point — the card frame is
+ * ~2:1, so it favours the top of the picture (`MEMORIAL_IMAGE_FOCAL`) to keep the flame.
+ * Decorative — the name always sits beside it, so it carries alt="".
  */
-export const MEMORIAL_IMAGE = '/images/brand/memorial-candle.svg';
+export const MEMORIAL_IMAGE = '/images/brand/memorial-candle.jpg';
+export const MEMORIAL_IMAGE_FOCAL = 'center 24%';
 
 /** A sized, auto-format URL for a Sanity image, honouring the editor's hotspot. */
 export function imageUrl(source: SanityImageSource, width: number, height?: number): string | undefined {

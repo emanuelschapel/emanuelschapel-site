@@ -1,6 +1,6 @@
 import { Calendar, MapPin, Video } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { imageUrl, lifespan, serviceWhen, livestreamHref, MEMORIAL_IMAGE, type ObituarySummary } from '../../lib/sanity';
+import { imageUrl, lifespan, serviceWhen, livestreamHref, MEMORIAL_IMAGE, MEMORIAL_IMAGE_FOCAL, type ObituarySummary } from '../../lib/sanity';
 
 interface ObituaryCardProps {
   obituary: ObituarySummary;
@@ -20,6 +20,7 @@ export default function ObituaryCard({ obituary }: ObituaryCardProps) {
           src={portrait ?? MEMORIAL_IMAGE}
           alt=""
           className="absolute inset-0 h-full w-full object-cover"
+          style={portrait ? undefined : { objectPosition: MEMORIAL_IMAGE_FOCAL }}
           loading="lazy"
           decoding="async"
         />

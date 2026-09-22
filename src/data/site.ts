@@ -26,6 +26,15 @@ export const site = {
    * Used by the schema.org markup so search engines can pin the site to the same spot.
    */
   geo: { latitude: 41.8006616, longitude: -87.684455 },
+  /**
+   * Handles as they appear on the current live site (emanuelschapel.com, Sept 2026).
+   * The Instagram mockup supplied for the Contact page shows "@emanuelchapel" — that is
+   * NOT the handle the live site links to. Confirm with Lakedia before go-live.
+   */
+  social: {
+    instagram: { handle: 'emanuelschapelfuneralhome', url: 'https://www.instagram.com/emanuelschapelfuneralhome' },
+    facebook: { url: 'https://m.facebook.com/Emanuels-Chapel-Funeral-Home-2346587382332548/' },
+  },
 } as const;
 
 /** `5112 S. Western Ave., Chicago, IL 60609` */

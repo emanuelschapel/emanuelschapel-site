@@ -3,6 +3,7 @@ import PageHero from '../components/sections/PageHero';
 import CTASection from '../components/sections/CTASection';
 import { services } from '../data/services';
 import { useSeo } from '../lib/seo';
+import VeteranHonorsBand from '../components/sections/VeteranHonorsBand';
 
 export default function Services() {
   useSeo({
@@ -69,6 +70,10 @@ export default function Services() {
           </div>
         </div>
       </section>
+
+      {/* Veteran honors get a section of their own: the flag-presentation image speaks to
+          the family of a veteran, not to every visitor, so it sits after the grid. */}
+      <VeteranHonorsBand />
 
       <CTASection
         headline="Questions about our services?"

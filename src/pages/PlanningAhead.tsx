@@ -1,8 +1,8 @@
 import { CheckCircle } from 'lucide-react';
-import PageHero from '../components/sections/PageHero';
 import PlanningForm from '../components/forms/PlanningForm';
 import CTASection from '../components/sections/CTASection';
 import { useSeo } from '../lib/seo';
+import SplitHero from '../components/sections/SplitHero';
 
 const benefits = [
   { title: 'Reduces Emotional Burden', desc: 'Your family will not need to make difficult decisions under the pressure of grief. Your wishes are already documented.' },
@@ -31,10 +31,17 @@ export default function PlanningAhead() {
   });
   return (
     <main>
-      <PageHero
+      {/* Two-panel banner rather than the full-bleed PageHero: the artwork is illustrative
+          (dove, sunrise, flowers) and deserves its own frame, and this is the one page whose
+          job is a booking — so the CTA sits in the banner and scrolls to the form. */}
+      <SplitHero
+        eyebrow="Planning Ahead"
         title="Plan Ahead with Confidence"
         subtitle="Give your family peace of mind by making your wishes known today — thoughtfully, privately, and without pressure."
-        imageSrc="/supportive_hands_family_care.jpg"
+        imageSrc="/images/heroes/planning-split.jpg"
+        imageAlt=""
+        focal="center 22%"
+        cta={{ label: 'Schedule a consultation', href: '#planning-form' }}
       />
 
       {/* Why Plan Ahead */}
@@ -88,7 +95,7 @@ export default function PlanningAhead() {
       </section>
 
       {/* Form */}
-      <section className="bg-white py-20 px-6">
+      <section id="planning-form" className="bg-white py-20 px-6 scroll-mt-32">
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="section-title mb-4">Request a Private Consultation</h2>
