@@ -21,10 +21,17 @@ export default function Services() {
   });
   return (
     <main>
+      {/* Client campaign artwork (Sept 2026), text cleared and the window side extended to
+          ~2.45:1. Mirrored from the original: she was on the left, which is where the copy
+          sits on every page — flipped, the copy lands on defocused window and her gaze
+          leads into it rather than away. */}
       <PageHero
-        title="Our Funeral Services"
+        eyebrow="Our Funeral Services"
+        title="More Than a Funeral Home"
         subtitle="Complete, compassionate funeral services for every family, every tradition, and every need."
-        imageSrc="/chapel_casket_display_gold_drapes.jpg"
+        imageSrc="/images/heroes/services-elder.jpg"
+        focal="70% center"
+        tone="light"
       />
 
       {/* Intro */}

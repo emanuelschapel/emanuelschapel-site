@@ -45,10 +45,16 @@ export default function About() {
   });
   return (
     <main>
+      {/* Client campaign artwork (Sept 2026). The supplied 4:3 frame would lose half its
+          height in this banner, so the bokeh flank was extended to ~2.45:1 and the baked-in
+          text cleared — the headline below is that same line, now live copy. */}
       <PageHero
-        title="About Emanuel's Chapel"
+        eyebrow="About Emanuel's Chapel"
+        title="Trusted by Our Community"
         subtitle="A trusted Chicago funeral home rooted in compassion, dignity, and community service."
-        imageSrc="/hero_exterior_fleet_staff_wide.jpg"
+        imageSrc="/images/heroes/about-family.jpg"
+        focal="72% center"
+        tone="light"
       />
 
       {/* Our Story */}

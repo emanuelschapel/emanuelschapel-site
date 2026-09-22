@@ -2,7 +2,7 @@ import { CheckCircle } from 'lucide-react';
 import PlanningForm from '../components/forms/PlanningForm';
 import CTASection from '../components/sections/CTASection';
 import { useSeo } from '../lib/seo';
-import SplitHero from '../components/sections/SplitHero';
+import PageHero from '../components/sections/PageHero';
 
 const benefits = [
   { title: 'Reduces Emotional Burden', desc: 'Your family will not need to make difficult decisions under the pressure of grief. Your wishes are already documented.' },
@@ -31,16 +31,17 @@ export default function PlanningAhead() {
   });
   return (
     <main>
-      {/* Two-panel banner rather than the full-bleed PageHero: the artwork is illustrative
-          (dove, sunrise, flowers) and deserves its own frame, and this is the one page whose
-          job is a booking — so the CTA sits in the banner and scrolls to the form. */}
-      <SplitHero
+      {/* Was a two-panel SplitHero, which clipped the dove's head and was the one banner
+          that did not match the rest. Now the standard full-bleed hero, cropped to dove and
+          sky: it keeps the bird whole and stops this page reading as a copy of Pricing,
+          which uses the candles-and-blossom frame of the same artwork. */}
+      <PageHero
         eyebrow="Planning Ahead"
         title="Plan Ahead with Confidence"
         subtitle="Give your family peace of mind by making your wishes known today — thoughtfully, privately, and without pressure."
-        imageSrc="/images/heroes/planning-split.jpg"
-        imageAlt=""
-        focal="center 22%"
+        imageSrc="/images/heroes/planning-sky.jpg"
+        focal="center 30%"
+        tone="light"
         cta={{ label: 'Schedule a consultation', href: '#planning-form' }}
       />
 

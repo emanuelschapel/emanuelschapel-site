@@ -21,6 +21,8 @@ interface PageHeroProps {
   tone?: 'dark' | 'light';
   /** Where the copy sits. "center" suits compositions with open sky in the middle. */
   align?: 'left' | 'center';
+  /** Optional button under the subtitle, for pages whose hero has a job to do. */
+  cta?: { label: string; href: string };
   isUrgent?: boolean;
 }
 
@@ -43,6 +45,7 @@ export default function PageHero({
   focal = 'center',
   tone = 'dark',
   align = 'left',
+  cta,
   isUrgent = false,
 }: PageHeroProps) {
   const light = tone === 'light';
@@ -107,6 +110,11 @@ export default function PageHero({
           >
             {subtitle}
           </p>
+        )}
+        {cta && (
+          <a href={cta.href} className={`${light ? 'btn-ink' : 'btn-primary'} mt-8 inline-block`}>
+            {cta.label}
+          </a>
         )}
       </div>
       <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-ivory to-transparent" />

@@ -27,12 +27,12 @@ export const site = {
    */
   geo: { latitude: 41.8006616, longitude: -87.684455 },
   /**
-   * Handles as they appear on the current live site (emanuelschapel.com, Sept 2026).
-   * The Instagram mockup supplied for the Contact page shows "@emanuelchapel" — that is
-   * NOT the handle the live site links to. Confirm with Lakedia before go-live.
+   * Instagram handle confirmed by the client, Sept 2026. Note the mockup on the Contact
+   * page still shows "@emanuelchapel" on the phone screen — that is illustration, not the
+   * account; the live handle is only ever read from here.
    */
   social: {
-    instagram: { handle: 'emanuelschapelfuneralhome', url: 'https://www.instagram.com/emanuelschapelfuneralhome' },
+    instagram: { handle: 'emanuelschapel2024', url: 'https://www.instagram.com/emanuelschapel2024' },
     facebook: { url: 'https://m.facebook.com/Emanuels-Chapel-Funeral-Home-2346587382332548/' },
   },
 } as const;
