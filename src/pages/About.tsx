@@ -23,10 +23,15 @@ const staffMembers = [
  * families) and deliberately asserts no fact that has not been supplied. If he would like a
  * signed pull-quote here, send his words — I will not put sentences in his mouth.
  */
+/**
+ * A real photograph of Emanuel, and his actual title — not placeholders. The old filename
+ * sat in the `staff_*_headshot_*` series alongside the stock portraits, which read as one.
+ * (The Sept 2026 pricing flyer says "President / CEO"; the client uses the title below.)
+ */
 const owner = {
   name: 'Emanuel Jones',
   title: 'Owner & Funeral Director',
-  image: '/staff_funeral_director_headshot_01.jpg',
+  image: '/images/emanuel-jones.jpg',
 };
 
 const values = [
