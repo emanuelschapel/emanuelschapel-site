@@ -23,13 +23,20 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
         {/* Brand column */}
         <div className="lg:col-span-1">
-          <img
-            src="/images/brand/logo-emanuels-chapel.png"
-            alt={site.legalName}
-            className="h-24 w-auto mb-5"
-            loading="lazy"
-            decoding="async"
-          />
+          {/* 320px wide for a 145×96 slot — double, for retina, and no more. The original
+              was a 1199×792 PNG at 627 KB, on every page. */}
+          <picture>
+            <source type="image/webp" srcSet="/images/brand/logo-footer.webp" />
+            <img
+              src="/images/brand/logo-footer.png"
+              alt={site.legalName}
+              width={320}
+              height={211}
+              className="h-24 w-auto mb-5"
+              loading="lazy"
+              decoding="async"
+            />
+          </picture>
           <p className="font-body text-muted text-sm leading-relaxed mb-6">
             Serving Chicago families with dignity, compassion, and professional care. Established {site.established}.
           </p>

@@ -32,11 +32,17 @@ export default function Header() {
         {/* Logo — the nav lockup already carries the name, so no repeated wordmark beside it.
             FUTURE: swap for a wreath-only monogram once the designer supplies one. */}
         <Link to="/" className="flex-shrink-0" aria-label={`${site.legalName} — home`}>
-          <img
-            src="/images/brand/logo-emanuels-chapel-nav.png"
-            alt={site.legalName}
-            className="h-14 w-auto"
-          />
+          <picture>
+            <source type="image/webp" srcSet="/images/brand/logo-nav.webp" />
+            <img
+              src="/images/brand/logo-nav.png"
+              alt={site.legalName}
+              width={240}
+              height={158}
+              className="h-14 w-auto"
+              fetchPriority="high"
+            />
+          </picture>
         </Link>
 
         {/* Desktop Nav */}
