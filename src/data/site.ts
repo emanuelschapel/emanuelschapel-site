@@ -34,9 +34,10 @@ export const site = {
   social: {
     instagram: { handle: 'emanuelschapel2024', url: 'https://www.instagram.com/emanuelschapel2024' },
     facebook: { url: 'https://m.facebook.com/Emanuels-Chapel-Funeral-Home-2346587382332548/' },
-    // TODO (client): TikTok profile URL. FollowSocial renders only the networks that have
-    // one, so filling this in is the whole change — the icon appears on its own.
-    tiktok: { url: '' },
+    // Handle is 24 characters because that is TikTok's limit — "…funeralhom" is the real
+    // account, not a typo. Link is the bare profile: the is_from_webapp/sender_device
+    // parameters the browser appends when you copy the URL are analytics, not addressing.
+    tiktok: { handle: 'emanuelschapelfuneralhom', url: 'https://www.tiktok.com/@emanuelschapelfuneralhom' },
   },
 } as const;
 
