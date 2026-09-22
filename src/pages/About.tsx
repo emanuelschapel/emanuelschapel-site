@@ -1,7 +1,6 @@
 import PageHero from '../components/sections/PageHero';
 import { Button } from '../components/ui/Button';
 import CTASection from '../components/sections/CTASection';
-import { site } from '../data/site';
 import { useSeo } from '../lib/seo';
 
 /** The "Our Team" grid is hidden until the client confirms names and titles. Flip to show. */
@@ -258,25 +257,23 @@ export default function About() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 gap-4 lg:grid-cols-[1.35fr_1fr] lg:grid-rows-[280px_280px]">
+          {/* The two rooms as the client photographed them, Sept 2026, graded to the
+              site's warm key. An explicit row height rather than an aspect ratio, because
+              FacilityPhoto drops to `aspect-auto` at lg and would otherwise collapse. */}
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-rows-[440px]">
             <FacilityPhoto
               feature
-              src="/chapel_casket_display_gold_drapes.jpg"
-              alt="The viewing room: a casket beneath draped gold curtains, flanked by pink and white floral arrangements"
+              src="/images/facility/facility-viewing-room.jpg"
+              alt="The viewing room: a casket at the front between two floral sprays, facing rows of grey seating"
               title="The Viewing Room"
-              caption="Private, softly lit, arranged around your loved one."
+              caption="Our smaller chapel — intimate and private, arranged around your loved one."
             />
             <FacilityPhoto
-              src="/chapel_interior_extended_seating_view.jpg"
+              feature
+              src="/images/facility/facility-main-chapel.jpg"
               alt="The main chapel, rows of seating facing the front under a chandelier"
               title="The Main Chapel"
               caption="Room for everyone who loved them."
-            />
-            <FacilityPhoto
-              src="/facility_front_exterior_signage.jpg"
-              alt="The front entrance of Emanuel's Chapel Funeral Home with its street sign"
-              title="Finding Us"
-              caption={`${site.address.street} — our staff will meet you at the door.`}
             />
           </div>
         </div>
@@ -295,7 +292,7 @@ export default function About() {
 /**
  * A facility photo with its name and a one-line caption over a bottom scrim. The scrim is
  * ink at 85% at the baseline, so white copy clears 4.5:1 regardless of what is in the photo.
- * `feature` spans both rows of the desktop grid.
+ * `feature` is the larger treatment — bigger caption, deeper shadow.
  */
 function FacilityPhoto({
   src, alt, title, caption, feature = false,
@@ -304,7 +301,7 @@ function FacilityPhoto({
     <figure
       className={`relative overflow-hidden rounded-sm ${
         feature
-          ? 'aspect-[4/3] lg:aspect-auto lg:row-span-2 shadow-[0_18px_50px_rgba(0,0,0,0.14)]'
+          ? 'aspect-[4/3] lg:aspect-auto shadow-[0_18px_50px_rgba(0,0,0,0.14)]'
           : 'aspect-[4/3] lg:aspect-auto shadow-[0_6px_20px_rgba(0,0,0,0.10)]'
       }`}
     >
