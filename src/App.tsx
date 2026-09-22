@@ -14,6 +14,7 @@ import PricingPackages from './pages/PricingPackages';
 import About from './pages/About';
 import Resources from './pages/Resources';
 import Contact from './pages/Contact';
+import NotFound from './pages/NotFound';
 
 /**
  * Scroll to the top on route change — unless the URL carries a hash, in which case scroll
@@ -65,6 +66,8 @@ function AppLayout() {
         <Route path="/about" element={<About />} />
         <Route path="/resources" element={<Resources />} />
         <Route path="/contact" element={<Contact />} />
+        {/* Catch-all. Keep last. */}
+        <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />
       <MobileCallBar />
