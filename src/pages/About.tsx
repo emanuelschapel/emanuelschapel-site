@@ -156,22 +156,29 @@ export default function About() {
               <span className="text-pink text-base leading-none" aria-hidden="true">&#10022;</span>
             </div>
 
+            {/* Bio supplied by the client, Sept 2026 — their wording, kept as written. */}
             <div className="space-y-5 max-w-[62ch]">
               <p className="font-body text-white/80 text-[15.5px] leading-[1.75]">
-                For Emanuel Jones, funeral service is less a profession he chose than a calling he
-                answered. He leads Emanuel&rsquo;s Chapel by a simple conviction: that every family
-                who walks through these doors deserves patience, honesty, and unhurried attention
-                &mdash; whatever the hour, whatever the circumstance.
+                For Emanuel Jones, funeral service is more than a profession&mdash;it is a calling.
+                As the owner of Emanuel&rsquo;s Chapel Funeral Home, he brings more than 30 years of
+                experience in the funeral industry and a deep commitment to serving families with
+                compassion, integrity, and personal attention.
               </p>
               <p className="font-body text-white/80 text-[15.5px] leading-[1.75]">
-                That commitment shows in the details. He guides families personally through the
-                decisions that follow a loss, explains every option plainly, and never presses for
-                more than a family needs. For households across the Chicagoland area, he has been
-                the steady presence in the room on the hardest day of their lives.
+                Emanuel believes every family deserves patience, honesty, and unhurried
+                care&mdash;regardless of the circumstances or time of day. He personally guides
+                families through the decisions that follow a loss, explains every option clearly,
+                and helps each family make arrangements that reflect their wishes, values, and needs.
               </p>
               <p className="font-body text-white/80 text-[15.5px] leading-[1.75]">
-                His dedication extends past any single service &mdash; to the funeral profession
-                itself, and to the South Side community Emanuel&rsquo;s Chapel is proud to call home.
+                For families throughout the Chicagoland area, Emanuel has become a trusted and
+                steady presence during some of life&rsquo;s most difficult moments. His dedication
+                extends beyond individual services to the funeral profession and to the South Side
+                community that Emanuel&rsquo;s Chapel is proud to call home.
+              </p>
+              <p className="font-body text-white/80 text-[15.5px] leading-[1.75]">
+                With experience, compassion, and genuine care, Emanuel Jones is committed to helping
+                every family honor their loved one with dignity and respect.
               </p>
             </div>
 
