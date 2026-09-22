@@ -22,9 +22,12 @@ import Contact from './pages/Contact';
  *
  * The target is looked up after paint, since the destination page has only just rendered.
  * Each anchored section sets `scroll-mt-*` so it clears the sticky availability bar + header.
+ *
+ * Keyed on the navigation (`key`) rather than the URL, so two links to the same anchor —
+ * "Choose Silver" then "Ask about Gold", both → #pricing-form — each scroll to it.
  */
 function ScrollManager() {
-  const { pathname, hash } = useLocation();
+  const { pathname, hash, key } = useLocation();
   useEffect(() => {
     if (!hash) {
       window.scrollTo(0, 0);
@@ -37,7 +40,7 @@ function ScrollManager() {
       else window.scrollTo(0, 0);
     });
     return () => cancelAnimationFrame(frame);
-  }, [pathname, hash]);
+  }, [pathname, hash, key]);
   return null;
 }
 
