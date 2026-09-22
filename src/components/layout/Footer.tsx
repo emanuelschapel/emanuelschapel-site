@@ -98,9 +98,14 @@ export default function Footer() {
         <p className="font-body text-xs text-muted tracking-wide">
           © {year} {site.legalName}. All rights reserved.
         </p>
-        <p className="font-body text-xs text-muted tracking-wide">
-          Website by <span className="text-ink font-semibold">KLC Consulting Group LLC</span>
-        </p>
+        <div className="flex items-center gap-5">
+          <Link to="/privacy" className="font-body text-xs text-muted tracking-wide hover:text-ink transition-colors">
+            Privacy Policy
+          </Link>
+          <p className="font-body text-xs text-muted tracking-wide">
+            Website by <span className="text-ink font-semibold">KLC Consulting Group LLC</span>
+          </p>
+        </div>
       </div>
     </footer>
   );
