@@ -1,0 +1,15 @@
+{
+  "name": "Emanuel's Chapel Funeral Home",
+  "short_name": "Emanuel's Chapel",
+  "description": "Compassionate funeral care for Chicago families. Burial, cremation, memorial, and veteran services.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#FCFAF9",
+  "theme_color": "#FCFAF9",
+  "icons": [
+    { "src": "/images/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/images/icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/images/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

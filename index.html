@@ -2,9 +2,16 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <!-- /vite.svg did not exist; using the brand mark until the designer supplies a
-         wreath-only monogram + vector logo (see INTEGRATION.md go-live checklist). -->
-    <link rel="icon" type="image/png" href="/images/brand/logo-nav.png" />
+    <!-- Icons are the wreath monogram cropped out of the nav lockup, on the site's ivory
+         so the black wreath reads against a dark tab bar as well as a light one. The full
+         logo was previously doing this job: its script wordmark is unreadable at 32px, and
+         it shipped 173 KB to draw a 16px square. -->
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="icon" type="image/png" href="/images/icons/icon-32.png" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/images/icons/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <!-- Ink, not ivory: the topmost element on the page is the black availability bar, so
+         this is what the mobile browser chrome should blend into. -->
     <meta name="theme-color" content="#141414" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Emanuel's Chapel Funeral Home — Compassionate funeral care for Chicago families. Burial, cremation, memorial, and veteran services. Call (773) 912-6745." />
