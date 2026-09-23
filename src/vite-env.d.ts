@@ -13,3 +13,5 @@ interface ImportMeta {
 
 /** Absolute site origin, no trailing slash. Baked at build from Netlify's URL — see vite.config.ts. */
 declare const __SITE_URL__: string;
+/** True while the site is served from netlify.app rather than its real domain. */
+declare const __PRELAUNCH__: boolean;

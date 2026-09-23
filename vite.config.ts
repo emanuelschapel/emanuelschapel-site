@@ -12,6 +12,17 @@ import { site } from './src/data/site'
  */
 const SITE_URL = (process.env.URL ?? 'https://emanuelchapelrebrand.netlify.app').replace(/\/$/, '')
 
+/**
+ * True while the site is still served from its netlify.app address rather than the real
+ * domain. Search engines are kept out until then — see the robots.txt writer below.
+ *
+ * Derived rather than configured on purpose: Netlify rewrites `URL` to the custom domain
+ * as soon as one is attached, so launch day flips this by itself and nobody has to
+ * remember. `ALLOW_INDEXING=true` forces it off if that is ever needed sooner.
+ */
+const PRELAUNCH =
+  process.env.ALLOW_INDEXING !== 'true' && /(^|\.)netlify\.app$/.test(new URL(SITE_URL).hostname)
+
 /** Every static route. Obituary tribute pages are added at build from Sanity. */
 const STATIC_ROUTES: Array<{ path: string; priority: number; changefreq: string }> = [
   { path: '/', priority: 1.0, changefreq: 'weekly' },
@@ -67,19 +78,45 @@ function sitemapAndRobots(env: Record<string, string>): Plugin {
         ...obituaries.map(o => `  <url><loc>${esc(`${SITE_URL}/obituaries/${o.slug}`)}</loc><lastmod>${o.updated.slice(0, 10)}</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>`),
       ]
       const sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.join('\n')}\n</urlset>\n`
-      const robots = [
-        'User-agent: *',
-        'Allow: /',
-        'Disallow: /__forms.html', // Netlify form declarations, not a page
-        '',
-        `Sitemap: ${SITE_URL}/sitemap.xml`,
-        '',
-      ].join('\n')
+
+      const robots = PRELAUNCH
+        ? [
+            '# Pre-launch. This build is served from a netlify.app address, which is not the',
+            '# address this site should be found at. Indexing it now would put the whole site',
+            '# in Google on the wrong hostname, competing with the real domain from day one.',
+            '#',
+            '# Nothing to do at launch: attaching the custom domain changes Netlify\'s URL',
+            '# variable, and the next build writes the real robots.txt on its own.',
+            'User-agent: *',
+            'Disallow: /',
+            '',
+          ].join('\n')
+        : [
+            'User-agent: *',
+            'Allow: /',
+            'Disallow: /__forms.html', // Netlify form declarations, not a page
+            '',
+            `Sitemap: ${SITE_URL}/sitemap.xml`,
+            '',
+          ].join('\n')
 
       mkdirSync(outDir, { recursive: true })
+      // The sitemap is written either way — it costs nothing, and it is ready the moment
+      // robots.txt starts pointing at it.
       writeFileSync(resolve(outDir, 'sitemap.xml'), sitemap)
       writeFileSync(resolve(outDir, 'robots.txt'), robots)
-      console.log(`[sitemap] ${STATIC_ROUTES.length} routes + ${obituaries.length} obituaries → ${SITE_URL}/sitemap.xml`)
+
+      if (PRELAUNCH) {
+        // Belt and braces. robots.txt stops the crawl; X-Robots-Tag keeps the URL out of
+        // the index even if a crawler reaches a page some other way (a shared link, a
+        // failed robots.txt fetch). Additive to the headers in netlify.toml.
+        writeFileSync(resolve(outDir, '_headers'), '/*\n  X-Robots-Tag: noindex, nofollow\n')
+      }
+
+      console.log(
+        `[sitemap] ${STATIC_ROUTES.length} routes + ${obituaries.length} obituaries → ${SITE_URL}/sitemap.xml` +
+          (PRELAUNCH ? '\n[robots] PRE-LAUNCH: indexing blocked (Disallow: / + X-Robots-Tag)' : '\n[robots] indexing allowed'),
+      )
     },
   }
 }
@@ -108,7 +145,7 @@ function schemaOrg(): Plugin {
     '@type': 'FuneralHome',
     '@id': `${SITE_URL}/#funeralhome`,
     url: SITE_URL,
-    logo: `${SITE_URL}/images/brand/logo-emanuels-chapel.png`,
+    logo: `${SITE_URL}/images/brand/logo-footer.png`,
     image: `${SITE_URL}/images/brand/hero-reception-wall-1200.jpg`,
     name: site.legalName,
     alternateName: site.name,
@@ -170,6 +207,9 @@ export default defineConfig(({ mode }) => {
   const env = { ...loadEnv(mode, process.cwd(), ''), ...process.env } as Record<string, string>
   return {
     plugins: [react(), schemaOrg(), sitemapAndRobots(env)],
-    define: { __SITE_URL__: JSON.stringify(SITE_URL) },
+    define: {
+      __SITE_URL__: JSON.stringify(SITE_URL),
+      __PRELAUNCH__: JSON.stringify(PRELAUNCH),
+    },
   }
 })

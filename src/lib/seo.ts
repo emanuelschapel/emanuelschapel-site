@@ -63,7 +63,10 @@ export function useSeo({ title, description, path, image, type = 'website', noin
     document.title = title;
     upsertMeta('name', 'description', description);
     upsertLink('canonical', url);
-    upsertMeta('name', 'robots', noindex ? 'noindex, nofollow' : 'index, follow');
+    // __PRELAUNCH__ is true while the site is served from netlify.app. robots.txt already
+    // blocks the crawl; this covers a crawler that reaches a page another way and renders
+    // it. It flips to index,follow by itself on the build after the domain is attached.
+    upsertMeta('name', 'robots', noindex || __PRELAUNCH__ ? 'noindex, nofollow' : 'index, follow');
 
     upsertMeta('property', 'og:type', type);
     upsertMeta('property', 'og:site_name', site.legalName);
