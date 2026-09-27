@@ -1,7 +1,7 @@
 # Handoff — Emanuel's Chapel Funeral Home site
 
 **Date:** 2026-09-27
-**Branch:** `main` @ `89c41d8` — clean tree, pushed, deployed
+**Branch:** `main` @ `08f0966` — clean tree, pushed, deployed
 **Live:** https://www.emanuelschapelfh.com — **launched, indexed, HTTPS enforced**
 
 ---
@@ -92,6 +92,8 @@ curl -s -H 'accept: application/dns-json' \
 | Sanity CORS | Production origins added — obituaries load |
 | Forms | 4 Netlify forms; **pricing form tested end-to-end on production** |
 | Accessibility | axe clean on 11/11 pages (see §4) |
+| Social sharing | Static `<head>` baked per route at build; every route serves its own card (see §5) |
+| Content freshness | Sanity webhook rebuilds the site on any obituary change |
 
 ### The indexing flip worked as designed
 
@@ -167,6 +169,10 @@ Commits on `main`, newest first. `91ededb` is this session's starting point.
 
 | Commit | Change |
 |---|---|
+| `08f0966` | Bake a static `<head>` into one HTML file per route |
+| `927d383` | Record the prerender spike results |
+| `479eef2` | Use the named `@sanity/image-url` export |
+| `f2e1746` | Add Google Search Console verification file |
 | `89c41d8` | Fix accessibility landmark and heading-order violations |
 | `216f9f8` | Redirect the staging hostname to the production domain |
 | `91ededb` | Block indexing until the real domain is attached; fix broken schema.org logo |
@@ -183,6 +189,58 @@ Commits on `main`, newest first. `91ededb` is this session's starting point.
   both credential-less (the dataset is public read).
 - **GoDaddy DNS:** apex `A` → `75.2.60.5`, `www` `CNAME` → `emanuelchapelrebrand.netlify.app`.
   Parking records removed. Mail records untouched and verified intact afterwards.
+
+### Prerendered heads — how it works
+
+Every shared link on the site used to render the same generic homepage card, because the app
+sets its `<head>` in a `useEffect` and no social scraper runs JavaScript. A family sharing a
+tribute got the funeral home's homepage title, homepage description and no image at all.
+
+The build now writes one HTML file per route with the real tags baked in.
+
+| File | Role |
+|---|---|
+| `src/data/seo-routes.ts` | Per-route title/description/sitemap weight. Read by the pages **and** the build — this is why the build can see the copy at all. |
+| `src/lib/seoTags.ts` | The tag set as data, plus its HTML serialiser. |
+| `src/lib/tributeSeo.ts` | One tribute's head and JSON-LD. Was inside `Tribute.tsx`, where the build could not reach it. |
+| `src/lib/links.ts` | `livestreamHref`, split out of `sanity.ts` so the build can use it without pulling in `@sanity/client`. |
+| `vite.config.ts` | Emits the files in `closeBundle`, reusing the Sanity fetch the sitemap already does. |
+
+**Three things to know before changing any of it:**
+
+1. **`seoTags.ts` is the single definition of which attribute carries which tag,** and it has
+   to stay that way. `useSeo` upserts by selector. If the build emitted `name="og:title"`
+   while the hook looked for `property="og:title"`, the hook would not find the baked tag,
+   would append a second one, and every page would ship duplicate Open Graph tags — valid
+   HTML that scrapers resolve inconsistently. Verified: exactly one of each tag on first
+   paint and after client-side navigation.
+2. **Files are `<route>.html`, never `<route>/index.html`.** See §7 item 14 — the directory
+   form triggers a trailing-slash redirect that breaks every canonical URL.
+3. **The sitemap route list and the pages' SEO copy are now the same list.** Adding a route
+   means adding it to `SEO_ROUTES` and nowhere else.
+
+A new obituary needs a build before it has a baked head or a sitemap entry. That is what the
+webhook below is for.
+
+### Sanity webhook → Netlify build hook
+
+A Netlify build hook (`Sanity obituary publish`, branch `main`) is wired to a Sanity webhook
+named **Rebuild site on obituary change**: dataset `production`, published documents only,
+triggering on create / update / delete where `_type == "obituary"`.
+
+Publishing an obituary now rebuilds the site on its own. Before this, a tribute went live
+immediately but stayed absent from the sitemap and shared as a generic card until somebody
+happened to deploy.
+
+**The build hook URL is a secret** — anyone holding it can trigger builds. It is not in the
+repo and is not recorded in this document. Find it in Netlify under Site configuration →
+Build & deploy → Build hooks, or in Sanity under Manage → API → Webhooks.
+
+Creating that webhook through the management API is worse than it looks: the accepted body
+depends on `type`, the triggers live under a `rule` object rather than a top-level `on`, and
+`filter` is a GROQ string inside `rule` but is rejected at the top level. `npx sanity hook
+create` is interactive and cannot be scripted. If it needs changing, the Manage UI is the
+sane route.
 
 ### The staging-hostname defect
 
@@ -222,6 +280,10 @@ catch-all (Netlify applies the first matching rule, and `/*` would swallow it).
 - **Heading tags now carry accessibility meaning.** Several headings use a tag that does not
   match their visual size on purpose — the size comes from the classes. Do not "tidy" an
   `h2` that looks small back into an `h4`; see §4.
+- **`src/lib/seoTags.ts` must stay the only place that decides a tag's attribute form**, and
+  `src/data/seo-routes.ts` the only place route copy lives. Moving a title back into a page
+  component makes it invisible to the build, which silently returns that route to sharing as
+  a generic card — nothing fails, the card just goes wrong. See §5.
 - **The netlify.app redirect in `netlify.toml` must stay above the `/*` rule.**
 
 ### Unused but intentionally kept
@@ -299,18 +361,6 @@ Recorded so nobody retries them. Items 1–11 are from the 2026-09-23 session an
 2. **Google Search Console.** Not created. Add `https://www.emanuelschapelfh.com` and submit
    `/sitemap.xml`. Create it under `owner@`, not the yahoo address. Everything on the site
    side is verified ready: sitemap valid, Googlebot gets 200, no blocking headers.
-
-### Social sharing is broken and nobody has noticed
-
-3. **OG tags are client-rendered.** Static `index.html` ships only `<title>` and
-   `<description>`; canonical and every OG/Twitter tag are set in a `useEffect`
-   (`src/lib/seo.ts`). Facebook's scraper does not execute JS, so a shared obituary link
-   renders as a bare URL with no image and no title card.
-
-   For a funeral home this matters more than it would anywhere else — obituary links are
-   shared on Facebook constantly, and that sharing is a real acquisition channel. Fixing it
-   needs prerendering (Netlify's prerender feature, or a build-time prerender plugin). This
-   is real work, not a toggle, and it is the largest remaining item.
 
 ### Email — move off the yahoo address
 
