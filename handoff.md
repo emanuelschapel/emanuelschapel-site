@@ -222,6 +222,33 @@ The build now writes one HTML file per route with the real tags baked in.
 A new obituary needs a build before it has a baked head or a sitemap entry. That is what the
 webhook below is for.
 
+### How fresh is the site, really
+
+Three independent clocks. Confusing them is what makes a publish look broken.
+
+| What | Updates | Gated by |
+|---|---|---|
+| Obituary lists and tribute content | **Seconds** | Sanity CDN (`max-age=3`), read on page mount or tab return |
+| Static `<head>` (share card) and sitemap entry | **~2 min** | Webhook → Netlify build |
+
+`useRemote` (`src/lib/useSanity.ts`) fetches on mount and on return to the foreground —
+`visibilitychange` plus `focus`, with a ten-second cooldown since the last fetch. It does
+not poll. Before the foreground refetch existed, a page left open never updated at all,
+which read as "publishing did not work" when the data had in fact been current within
+seconds.
+
+Measured on 2026-09-27 with a real publish-then-delete: the obituary appeared on the site
+within seconds and the webhook build finished about two minutes later. A deletion behaves
+the same way. If one appears to linger, reload before assuming staleness — an open tab that
+has not been focused is showing its mount-time fetch.
+
+**Takedown timing matters here.** On a removal the page body corrects immediately — anyone
+loading the URL gets "We couldn't find that tribute" — but the prerendered `<head>` still
+carries the person's name and short bio until the rebuild finishes, so a social scraper
+hitting that URL inside the window still receives them. Off the site immediately, off the
+share cards in about two minutes. `ALLOW_INDEXING`-style shortcuts do not help; only a build
+does, and the webhook already starts one.
+
 **One nuance on unmatched paths.** `index.html` doubles as the SPA fallback, so a mistyped
 URL now serves home's baked head, including `robots: index, follow`, until React renders the
 404 and switches it to `noindex, nofollow` (verified — one tag, correct value). Google runs
