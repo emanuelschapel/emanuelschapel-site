@@ -275,6 +275,16 @@ Recorded so nobody retries them. Items 1–11 are from the 2026-09-23 session an
 13. **`netlify api provisionSiteTLSCertificate` returned `Unprocessable Entity`.** Not a
     failure: Netlify had already provisioned the certificate automatically once DNS resolved.
     Check `getSite` for `ssl: true` before trying to force it.
+14. **Prerendering as `dist/<route>/index.html` (directory index) is disqualified.** Netlify's
+    `pretty_urls` 301-redirects `/obituaries/foo` → `/obituaries/foo/`. Every canonical URL and
+    every sitemap entry on this site is slash-less, so each tribute would take an extra hop and
+    the served URL would disagree with its own `og:url`. Emit `dist/<route>.html` instead —
+    measured at 200 with zero redirects at the exact slash-less URL. See §9.
+15. **A draft deploy cannot be used to test any of this.** The account sets `sso_login: true`
+    with `sso_login_context: "non_production"`, so every non-production deploy answers 401 to
+    an unauthenticated fetch — including `curl` and every social scraper. Do not disable that
+    setting for a test; spike against production using paths that do not exist yet
+    (`/spike-test`, a non-existent obituary slug) and restore with `createSiteBuild`.
 
 ---
 
@@ -358,7 +368,37 @@ three form inputs), so all of this is dashboard config. No code, no redeploy.
 
 ---
 
-## 9. Launch verification log (2026-09-27)
+## 9. Prerender spike — measured results (2026-09-27)
+
+Run before building the prerender work in §8 item 3, to find out how Netlify actually serves
+emitted route files. Both variants were deployed to production on throwaway paths and removed.
+
+| Variant | Result |
+|---|---|
+| `dist/<route>/index.html` | **301 → trailing slash.** `og:url` then disagrees with the served URL, and every sitemap entry redirects. Rejected. |
+| `dist/<route>.html` | **200, zero redirects**, served at the exact slash-less URL. `pretty_urls` resolves the extension. Use this. |
+
+Also measured, on a flat file at `/obituaries/<slug>`:
+
+- `facebookexternalhit` receives the route-specific `<title>`, `og:title`, `og:url`, `og:image`.
+- React hydrates normally; `location.pathname` is correct and the right route renders.
+- **No duplicate head tags.** `useSeo` upserts by selector (`link[rel="canonical"]`,
+  `meta[property="og:title"]`, …), so it updates the baked tags in place. The emitting plugin
+  **must** use those exact attribute forms or every page ships two of each tag.
+- After hydration the client overwrites the baked values. For a real obituary it writes the
+  same values back. For a missing one it correctly switches to the not-found state with
+  `noindex` — so a crawler that does not run JS still gets the good baked meta, which is the
+  point.
+
+**Known caveat:** the `.html` form stays reachable (`/obituaries/foo.html` returns 200), so
+each page has two working URLs. The baked `<link rel="canonical">` consolidates them for search
+engines, which is enough. Do **not** "fix" it with a blanket `/*.html → /:splat` redirect:
+`__forms.html` must keep its exact path or Netlify stops registering the forms, and
+`googlea67b9d453a067c5b.html` must keep its exact path or Search Console un-verifies.
+
+---
+
+## 10. Launch verification log (2026-09-27)
 
 Run again after any infrastructure change.
 
