@@ -1,5 +1,7 @@
 import { createClient } from '@sanity/client';
-import imageUrlBuilder, { type SanityImageSource } from '@sanity/image-url';
+// Named export, not the default: the default is deprecated and logs a warning in the
+// browser console on every page that builds an image URL.
+import { createImageUrlBuilder, type SanityImageSource } from '@sanity/image-url';
 
 /**
  * Read-only access to the obituaries in Sanity.
@@ -31,7 +33,7 @@ export const sanity = sanityConfigured
     })
   : null;
 
-const builder = sanity ? imageUrlBuilder(sanity) : null;
+const builder = sanity ? createImageUrlBuilder(sanity) : null;
 
 /**
  * Shown wherever a portrait would go when the family has not supplied one: a lit candle
