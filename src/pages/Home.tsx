@@ -137,7 +137,9 @@ export default function Home() {
                     <Icon size={18} className="text-ink" />
                   </div>
                   <div>
-                    <h4 className="font-heading text-ink font-semibold text-base mb-1">{label}</h4>
+                    {/* h3, not h4: these cards sit directly under the section's h2, so an h4
+                        skips a level and breaks the outline. Size comes from the classes. */}
+                    <h3 className="font-heading text-ink font-semibold text-base mb-1">{label}</h3>
                     <p className="font-body text-sm text-muted leading-relaxed">{desc}</p>
                   </div>
                 </div>

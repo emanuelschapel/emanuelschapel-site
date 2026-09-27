@@ -63,7 +63,9 @@ export default function ObituaryGrid({ remote, compact = false }: { remote: Remo
 function Notice({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div role="status" className="bg-blush rounded-sm p-10 text-center max-w-2xl mx-auto">
-      <h3 className="font-display text-xl text-ink mb-3">{title}</h3>
+      {/* h2: the loading / error / empty notices render directly under the page's h1, so an
+          h3 here skips a level. Visual size is set by the classes, not the tag. */}
+      <h2 className="font-display text-xl text-ink mb-3">{title}</h2>
       <p className="font-body text-sm text-muted leading-relaxed">{children}</p>
     </div>
   );

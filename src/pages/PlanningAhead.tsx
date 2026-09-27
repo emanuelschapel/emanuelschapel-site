@@ -67,7 +67,7 @@ export default function PlanningAhead() {
                 <div key={b.title} className="flex items-start gap-4 bg-blush p-5 rounded-sm">
                   <CheckCircle size={20} className="text-ink mt-0.5 flex-shrink-0" />
                   <div>
-                    <h4 className="font-heading text-ink font-semibold mb-1">{b.title}</h4>
+                    <h3 className="font-heading text-ink font-semibold mb-1">{b.title}</h3>
                     <p className="font-body text-sm text-muted leading-relaxed">{b.desc}</p>
                   </div>
                 </div>

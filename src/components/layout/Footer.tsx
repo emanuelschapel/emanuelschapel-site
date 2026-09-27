@@ -45,7 +45,10 @@ export default function Footer() {
 
         {/* Navigation */}
         <div>
-          <h4 className="font-display text-ink text-base mb-5 tracking-wide">Navigation</h4>
+          {/* h2, not h4: these are top-level footer sections, and the last heading in <main>
+              is an h2, so an h4 here skips h3 and breaks the document outline for screen
+              readers. Visual size is set by the classes, not the tag. */}
+          <h2 className="font-display text-ink text-base mb-5 tracking-wide">Navigation</h2>
           <ul className="space-y-2">
             {navItems.map((item) => (
               <li key={item.path}>
@@ -62,7 +65,7 @@ export default function Footer() {
 
         {/* Services */}
         <div>
-          <h4 className="font-display text-ink text-base mb-5 tracking-wide">Services</h4>
+          <h2 className="font-display text-ink text-base mb-5 tracking-wide">Services</h2>
           <ul className="space-y-2">
             {['Burial Services', 'Cremation Services', 'Memorial Services', 'Veteran Services', 'Pre-Planning', 'Personalized Tributes'].map((s) => (
               <li key={s}>
@@ -76,7 +79,7 @@ export default function Footer() {
 
         {/* Contact */}
         <div>
-          <h4 className="font-display text-ink text-base mb-5 tracking-wide">Contact Us</h4>
+          <h2 className="font-display text-ink text-base mb-5 tracking-wide">Contact Us</h2>
           <div className="space-y-4">
             <a href={PHONE_HREF} className="flex items-start gap-3 group">
               <Phone size={16} className="text-ink mt-0.5 flex-shrink-0" aria-hidden="true" />

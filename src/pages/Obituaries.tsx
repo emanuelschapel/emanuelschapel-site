@@ -43,7 +43,7 @@ export default function Obituaries() {
           <ObituaryGrid remote={obituaries} />
 
           <div className="mt-16 text-center bg-blush rounded-sm p-10">
-            <h3 className="font-display text-xl text-ink mb-3">Don't See a Service Listed?</h3>
+            <h2 className="font-display text-xl text-ink mb-3">Don't See a Service Listed?</h2>
             <p className="font-body text-muted text-sm mb-6 max-w-md mx-auto">
               Contact our office directly. A staff member can assist you with finding service details or submitting a tribute notice.
             </p>

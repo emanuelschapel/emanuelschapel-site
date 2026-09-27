@@ -226,7 +226,7 @@ export default function About() {
                     }}
                   />
                 </div>
-                <h4 className="font-heading text-ink font-semibold text-lg mb-2">{member.title}</h4>
+                <h3 className="font-heading text-ink font-semibold text-lg mb-2">{member.title}</h3>
                 <p className="font-body text-sm text-muted leading-relaxed max-w-xs mx-auto">{member.desc}</p>
               </div>
             ))}
