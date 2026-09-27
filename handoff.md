@@ -222,6 +222,13 @@ The build now writes one HTML file per route with the real tags baked in.
 A new obituary needs a build before it has a baked head or a sitemap entry. That is what the
 webhook below is for.
 
+**One nuance on unmatched paths.** `index.html` doubles as the SPA fallback, so a mistyped
+URL now serves home's baked head, including `robots: index, follow`, until React renders the
+404 and switches it to `noindex, nofollow` (verified — one tag, correct value). Google runs
+JS, so it sees the correction. Not a regression: before this change `index.html` carried no
+robots meta at all, which is equally indexable. Narrowing the Netlify rule to return a real
+404 for unmatched paths (§8) would remove the window entirely.
+
 ### Sanity webhook → Netlify build hook
 
 A Netlify build hook (`Sanity obituary publish`, branch `main`) is wired to a Sanity webhook
