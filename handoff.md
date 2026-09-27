@@ -215,6 +215,10 @@ catch-all (Netlify applies the first matching rule, and `/*` would swallow it).
   three treatments; do not compose one-off Tailwind button strings in pages.
 - **`public/__forms.html`** — any field added to a React form must be declared here or
   Netlify silently drops it. (The `package` field is declared and verified working.)
+- **`public/googlea67b9d453a067c5b.html`** — Google Search Console verification. It looks
+  like a stray file and it is not. Google re-checks it periodically and revokes verification
+  if it stops resolving, so deleting it silently un-verifies the property some weeks later,
+  with nothing in the build to explain why. Leave it.
 - **Heading tags now carry accessibility meaning.** Several headings use a tag that does not
   match their visual size on purpose — the size comes from the classes. Do not "tidy" an
   `h2` that looks small back into an `h4`; see §4.
@@ -380,3 +384,17 @@ recorded it on the `pricing` form with every field intact, including `package = 
 was the field the previous handoff flagged as unverified. Inline success panel rendered.
 Notification went to `emanuelschapel@yahoo.com`; the submission is marked as a KLC test in
 its name and message fields.
+
+**Obituary pipeline test, 2026-09-27 21:07 UTC** — a `launch-test` obituary was published in
+Sanity and the next build picked it up into the sitemap automatically, which proves the
+tribute pipeline works end to end. It was then deleted and the site rebuilt.
+
+Two things that surfaced and are worth keeping:
+
+- **The sitemap only regenerates at build time.** Deleting a document in Sanity does not
+  remove its URL from the live sitemap; a rebuild is required. Publishing a new obituary has
+  the same lag in reverse — it appears in the sitemap on the next build, not on Publish.
+- **A tribute URL with no matching document renders a graceful "We couldn't find that
+  tribute" page with `noindex, nofollow`**, so a deleted obituary cannot be indexed even if a
+  crawler saw the URL while it was still listed. This is why the `noindex` prop exists in
+  `src/lib/seo.ts`.
