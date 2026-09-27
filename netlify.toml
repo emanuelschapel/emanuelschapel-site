@@ -11,6 +11,24 @@
   # Vite 8 needs a modern Node; matches the version the site is developed on.
   NODE_VERSION = "22"
 
+# Retire the staging hostname. Netlify keeps serving <site>.netlify.app after a custom
+# domain is attached — it does not redirect on its own — so without this rule the whole
+# site is reachable, and indexable, on two hostnames at once. The pre-launch robots.txt
+# block (vite.config.ts) lifts the moment the domain is attached, which closes the
+# pre-launch hole and opens this one.
+#
+# A 301 rather than a canonical tag because the canonical is set in a useEffect
+# (src/lib/seo.ts) and only exists for crawlers that execute JS. This works for every
+# client, consolidates link equity on the real domain, and costs nothing.
+#
+# Must stay ABOVE the SPA catch-all: Netlify applies the first matching rule, and /*
+# would swallow these requests.
+[[redirects]]
+  from = "https://emanuelchapelrebrand.netlify.app/*"
+  to = "https://www.emanuelschapelfh.com/:splat"
+  status = 301
+  force = true
+
 # BrowserRouter does client-side routing. Without this rewrite a direct hit or refresh on
 # /services, /about, etc. is a hard 404 from Netlify because no such file exists in dist/.
 # Status 200 (not 301) keeps the URL in the address bar and lets the router take over.
