@@ -5,13 +5,10 @@ import CTASection from '../components/sections/CTASection';
 import { fetchObituaries } from '../lib/sanity';
 import { useRemote } from '../lib/useSanity';
 import { useSeo } from '../lib/seo';
+import { routeSeo } from '../data/seo-routes';
 
 export default function Obituaries() {
-  useSeo({
-    title: "Obituaries & Tribute Notices | Emanuel's Chapel, Chicago",
-    description: "Current obituaries and service details for families served by Emanuel's Chapel Funeral Home on Chicago's South Side.",
-    path: '/obituaries',
-  });
+  useSeo(routeSeo('/obituaries'));
   const obituaries = useRemote(() => fetchObituaries(), []);
 
   return (

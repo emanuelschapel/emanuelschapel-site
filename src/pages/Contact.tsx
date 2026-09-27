@@ -5,6 +5,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { PHONE, PHONE_HREF, ADDRESS, HOURS_NOTE, ADDRESS_NOTE } from '../data/navigation';
 import { site } from '../data/site';
 import { useSeo } from '../lib/seo';
+import { routeSeo } from '../data/seo-routes';
 import FollowSocial from '../components/sections/FollowSocial';
 
 /**
@@ -16,11 +17,7 @@ import FollowSocial from '../components/sections/FollowSocial';
 const MAP_QUERY = encodeURIComponent(`${site.legalName}, ${ADDRESS}`);
 
 export default function Contact() {
-  useSeo({
-    title: "Contact Emanuel's Chapel | 5112 S. Western Ave, Chicago",
-    description: "Reach Emanuel's Chapel Funeral Home by phone at (773) 912-6745, by message, or in person at 5112 S. Western Ave., Chicago. Available 24/7.",
-    path: '/contact',
-  });
+  useSeo(routeSeo('/contact'));
   // React Router reuses this element when only the query string changes, so without a key
   // a visitor who submits and then follows another "Request Assistance" link would land on
   // the previous confirmation instead of a fresh form pre-filled for the new service.

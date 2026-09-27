@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { site, formattedAddress } from '../data/site';
 import { PHONE, PHONE_HREF } from '../data/navigation';
 import { useSeo } from '../lib/seo';
+import { routeSeo } from '../data/seo-routes';
 
 /**
  * Privacy policy.
@@ -16,12 +17,7 @@ import { useSeo } from '../lib/seo';
 const EFFECTIVE = 'September 22, 2026';
 
 export default function Privacy() {
-  useSeo({
-    title: "Privacy Policy | Emanuel's Chapel Funeral Home",
-    description:
-      "How Emanuel's Chapel Funeral Home collects, uses, and protects the information you share through this website.",
-    path: '/privacy',
-  });
+  useSeo(routeSeo('/privacy'));
 
   return (
     <main className="bg-white">

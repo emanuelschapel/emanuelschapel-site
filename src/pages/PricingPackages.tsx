@@ -5,6 +5,7 @@ import PackageTiers from '../components/sections/PackageTiers';
 import CTASection from '../components/sections/CTASection';
 import { PHONE, PHONE_HREF } from '../data/navigation';
 import { useSeo } from '../lib/seo';
+import { routeSeo } from '../data/seo-routes';
 
 const pricingCategories = [
   {
@@ -34,11 +35,7 @@ const factors = [
 ];
 
 export default function PricingPackages() {
-  useSeo({
-    title: "Funeral Pricing & Packages | Emanuel's Chapel, Chicago",
-    description: "Honest guidance on funeral costs and service packages, and our General Price List on request. Emanuel's Chapel Funeral Home, Chicago.",
-    path: '/pricing',
-  });
+  useSeo(routeSeo('/pricing'));
   return (
     <main>
       {/* Client artwork (Sept 2026) with its baked-in text cleared so the headline is live

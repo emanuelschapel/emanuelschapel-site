@@ -1,8 +1,11 @@
 import { defineConfig, loadEnv, type Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
-import { writeFileSync, mkdirSync } from 'node:fs'
-import { resolve } from 'node:path'
+import { writeFileSync, mkdirSync, readFileSync } from 'node:fs'
+import { resolve, dirname } from 'node:path'
 import { site } from './src/data/site'
+import { SEO_ROUTES } from './src/data/seo-routes'
+import { seoTags, renderSeoTags } from './src/lib/seoTags'
+import { buildTributeSeo, type TributeSeoInput } from './src/lib/tributeSeo'
 
 /**
  * The site's public base URL, baked into the bundle for canonical / Open Graph URLs and
@@ -23,19 +26,15 @@ const SITE_URL = (process.env.URL ?? 'https://emanuelchapelrebrand.netlify.app')
 const PRELAUNCH =
   process.env.ALLOW_INDEXING !== 'true' && /(^|\.)netlify\.app$/.test(new URL(SITE_URL).hostname)
 
-/** Every static route. Obituary tribute pages are added at build from Sanity. */
-const STATIC_ROUTES: Array<{ path: string; priority: number; changefreq: string }> = [
-  { path: '/', priority: 1.0, changefreq: 'weekly' },
-  { path: '/immediate-need', priority: 0.9, changefreq: 'monthly' },
-  { path: '/services', priority: 0.9, changefreq: 'monthly' },
-  { path: '/obituaries', priority: 0.9, changefreq: 'daily' },
-  { path: '/planning-ahead', priority: 0.7, changefreq: 'monthly' },
-  { path: '/pricing', priority: 0.7, changefreq: 'monthly' },
-  { path: '/about', priority: 0.6, changefreq: 'monthly' },
-  { path: '/resources', priority: 0.6, changefreq: 'monthly' },
-  { path: '/contact', priority: 0.8, changefreq: 'monthly' },
-  { path: '/privacy', priority: 0.2, changefreq: 'yearly' },
-]
+/**
+ * Every static route, with the same title and description the running app uses.
+ *
+ * Single source of truth: this list used to be duplicated here with only paths and sitemap
+ * weights, while the copy lived as literals inside each page component. The build therefore
+ * had no way to see the copy, which is why every shared link rendered the generic homepage
+ * card. Tribute pages are added at build from Sanity.
+ */
+const STATIC_ROUTES = SEO_ROUTES
 
 /**
  * Writes robots.txt and sitemap.xml into the publish directory after the bundle.
@@ -54,14 +53,38 @@ function sitemapAndRobots(env: Record<string, string>): Plugin {
     async closeBundle() {
       const projectId = env.VITE_SANITY_PROJECT_ID
       const dataset = env.VITE_SANITY_DATASET || 'production'
-      let obituaries: Array<{ slug: string; updated: string }> = []
+      // `updated` drives the sitemap; everything else is the tribute's baked <head>.
+      // `portrait.asset->url` is dereferenced here rather than built with the image-url
+      // builder, which would pull @sanity/client into the config. The query params below
+      // match `imageUrl(source, 1200, 630)`; the editor's hotspot is not applied, so a
+      // shared card may crop slightly differently from the portrait on the page itself.
+      type BuildObituary = TributeSeoInput & { updated: string }
+      let obituaries: BuildObituary[] = []
       if (projectId) {
         try {
-          const q = encodeURIComponent('*[_type == "obituary" && defined(slug.current)]{ "slug": slug.current, "updated": _updatedAt }')
+          const q = encodeURIComponent(
+            `*[_type == "obituary" && defined(slug.current)]{
+              "slug": slug.current,
+              "updated": _updatedAt,
+              name,
+              shortBio,
+              dateOfBirth,
+              dateOfPassing,
+              serviceDate,
+              serviceEnd,
+              serviceLocation,
+              "livestreamEnabled": coalesce(livestreamEnabled, false),
+              livestreamUrl,
+              "portraitUrl": portrait.asset->url
+            }`,
+          )
           const res = await fetch(`https://${projectId}.apicdn.sanity.io/v2025-01-01/data/query/${dataset}?query=${q}&perspective=published`)
           if (res.ok) {
-            const body = (await res.json()) as { result?: typeof obituaries }
-            obituaries = body.result ?? []
+            const body = (await res.json()) as { result?: BuildObituary[] }
+            obituaries = (body.result ?? []).map(o => ({
+              ...o,
+              portraitUrl: o.portraitUrl ? `${o.portraitUrl}?w=1200&h=630&fit=crop&auto=format` : undefined,
+            }))
           }
           else console.warn(`[sitemap] Sanity responded ${res.status}; listing static routes only`)
         } catch (err) {
@@ -116,6 +139,47 @@ function sitemapAndRobots(env: Record<string, string>): Plugin {
       console.log(
         `[sitemap] ${STATIC_ROUTES.length} routes + ${obituaries.length} obituaries → ${SITE_URL}/sitemap.xml` +
           (PRELAUNCH ? '\n[robots] PRE-LAUNCH: indexing blocked (Disallow: / + X-Robots-Tag)' : '\n[robots] indexing allowed'),
+      )
+
+      // ----------------------------------------------------------------------------------
+      // Static <head> per route.
+      //
+      // The app sets its head in a useEffect, so a client that does not run JavaScript sees
+      // only index.html's defaults. Facebook, iMessage, WhatsApp, LinkedIn and Slack all
+      // work that way, which meant every shared link — including every obituary — rendered
+      // the site's generic homepage card. Baking a file per route fixes that, and puts real
+      // per-route titles into the HTML Google indexes on its first pass.
+      //
+      // Emitted as `<route>.html`, NOT `<route>/index.html`: Netlify's pretty_urls 301s a
+      // directory to a trailing slash, and every canonical and sitemap URL here is
+      // slash-less, so each tribute would take an extra hop and disagree with its own
+      // og:url. Measured — see handoff.md §9.
+      const shell = readFileSync(resolve(outDir, 'index.html'), 'utf8')
+      const ctx = { siteUrl: SITE_URL, prelaunch: PRELAUNCH, siteName: site.legalName }
+
+      /** index.html's own <title> and description, replaced by each route's own. */
+      const stripDefaults = (html: string) =>
+        html.replace(/\s*<title>[\s\S]*?<\/title>/, '').replace(/\s*<meta\s+name="description"[^>]*>/, '')
+
+      const emit = (routePath: string, tags: ReturnType<typeof seoTags>) => {
+        const html = stripDefaults(shell).replace('</head>', `  ${renderSeoTags(tags)}\n  </head>`)
+        // "/" is index.html itself, which doubles as the SPA fallback for unmatched paths.
+        const file = routePath === '/' ? 'index.html' : `${routePath.replace(/^\//, '')}.html`
+        const out = resolve(outDir, file)
+        mkdirSync(dirname(out), { recursive: true })
+        writeFileSync(out, html)
+      }
+
+      for (const route of STATIC_ROUTES) {
+        emit(route.path, seoTags({ title: route.title, description: route.description, path: route.path }, ctx))
+      }
+      for (const o of obituaries) {
+        emit(`/obituaries/${o.slug}`, seoTags(buildTributeSeo(o, SITE_URL), ctx))
+      }
+
+      console.log(
+        `[prerender] ${STATIC_ROUTES.length + obituaries.length} route heads baked ` +
+          `(${STATIC_ROUTES.length} static + ${obituaries.length} tributes)`,
       )
     },
   }

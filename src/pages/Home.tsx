@@ -11,6 +11,7 @@ import { useRemote } from '../lib/useSanity';
 import { resources } from '../data/resources';
 import { PHONE, PHONE_HREF } from '../data/navigation';
 import { useSeo } from '../lib/seo';
+import { routeSeo } from '../data/seo-routes';
 
 const trustPoints = [
   { icon: Heart, label: 'Compassionate Guidance', desc: 'Our directors are with you through every step, with care and patience.' },
@@ -32,11 +33,7 @@ const featuredServices = FEATURED_SERVICE_IDS.map(id => services.find(s => s.id 
 );
 
 export default function Home() {
-  useSeo({
-    title: "Emanuel's Chapel Funeral Home | Chicago, IL",
-    description: "Family-owned funeral home on Chicago's South Side, available 24 hours a day. Burial, cremation, memorial, and veteran services. Call (773) 912-6745.",
-    path: '/',
-  });
+  useSeo(routeSeo('/'));
   // Three most recent; the full list lives on /obituaries.
   const recentObituaries = useRemote(() => fetchObituaries(3), []);
   return (

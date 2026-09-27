@@ -5,13 +5,10 @@ import CTASection from '../components/sections/CTASection';
 import { resources } from '../data/resources';
 import { faqs } from '../data/faqs';
 import { useSeo } from '../lib/seo';
+import { routeSeo } from '../data/seo-routes';
 
 export default function Resources() {
-  useSeo({
-    title: "Family Resources & FAQ | Emanuel's Chapel, Chicago",
-    description: "What to do when a loved one passes, planning checklists, burial vs. cremation, and answers to common questions from Emanuel's Chapel.",
-    path: '/resources',
-  });
+  useSeo(routeSeo('/resources'));
   return (
     <main>
       {/* The chapel itself, graded to the daylight key. Cropped rather than extended: the

@@ -2,6 +2,7 @@ import { CheckCircle } from 'lucide-react';
 import PlanningForm from '../components/forms/PlanningForm';
 import CTASection from '../components/sections/CTASection';
 import { useSeo } from '../lib/seo';
+import { routeSeo } from '../data/seo-routes';
 import PageHero from '../components/sections/PageHero';
 
 const benefits = [
@@ -24,11 +25,7 @@ const checklist = [
 ];
 
 export default function PlanningAhead() {
-  useSeo({
-    title: "Pre-Planning a Funeral | Emanuel's Chapel, Chicago",
-    description: "Plan ahead with a confidential consultation. Document your wishes and relieve your family of difficult decisions. Emanuel's Chapel, Chicago.",
-    path: '/planning-ahead',
-  });
+  useSeo(routeSeo('/planning-ahead'));
   return (
     <main>
       {/* Was a two-panel SplitHero, which clipped the dove's head and was the one banner
