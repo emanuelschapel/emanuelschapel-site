@@ -89,6 +89,11 @@ function Plinth({ className = "", gradient = false }: { className?: string; grad
       <div className="mx-auto max-w-site px-6">
         <p className="max-w-[52ch] font-display text-[22px] leading-snug lg:text-[26px]">
           Family-owned on Chicago's South Side, ready the moment you call.
+          <span className="mt-3 block font-body text-[15px] italic leading-relaxed text-white/90">
+            Emanuel's Chapel mission is to provide the highest standard of professional excellence and
+            compassionate care to our families, friends, and community in order to have a prepared service
+            to prepare people.
+          </span>
           <span className="mt-2.5 block font-body text-[14.5px] leading-relaxed text-white/75">
             If a death has just occurred, call us now. We will guide you through every step, at any hour.
           </span>
