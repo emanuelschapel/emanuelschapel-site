@@ -25,7 +25,23 @@
 # would swallow these requests.
 [[redirects]]
   from = "https://emanuelchapelrebrand.netlify.app/*"
-  to = "https://www.emanuelschapelfh.com/:splat"
+  to = "https://www.emanuelschapel.com/:splat"
+  status = 301
+  force = true
+
+# Legacy production domain (emanuelschapelfh.com). The site launched and was indexed there
+# before the client took ownership of emanuelschapel.com. These rules only work while the
+# fh domain is still registered AND its A/CNAME still point at Netlify; once that domain is
+# allowed to lapse they are dead code and can be deleted.
+[[redirects]]
+  from = "https://www.emanuelschapelfh.com/*"
+  to = "https://www.emanuelschapel.com/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://emanuelschapelfh.com/*"
+  to = "https://www.emanuelschapel.com/:splat"
   status = 301
   force = true
 
