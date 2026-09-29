@@ -33,7 +33,7 @@ Production tokens (Sept 2026). The prototype's fuchsia/plum palette is retired �
 
 ## Hosting — Netlify
 Deployed from the `main` branch of `github.com/emanuelschapel/emanuelschapel-site` to
-https://emanuelschapelrebrand.netlify.app. `netlify.toml` holds the build command, publish
+https://emanuelchapelrebrand.netlify.app. `netlify.toml` holds the build command, publish
 directory, Node version, and the `/* → /index.html` rewrite that `BrowserRouter` needs —
 without it a refresh on any page but `/` is a hard 404.
 

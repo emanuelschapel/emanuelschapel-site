@@ -6,6 +6,32 @@
 
 ---
 
+## 0. PENDING: domain move to emanuelschapel.com (supersedes §2 once done)
+
+The client now owns `emanuelschapel.com` and is moving the site back to it, then cancelling
+GoDaddy entirely (domain + M365 mail) and rebuilding email as Google Workspace in
+Squarespace. Sections 2–5 below describe the **old** `emanuelschapelfh.com` setup and go
+stale at cutover. `netlify.toml` already redirects the fh hostnames to the new domain, but
+the redirects are inert until DNS/Netlify are switched.
+
+Do these in order; **do not cancel GoDaddy first**:
+
+1. Set up Google Workspace on `emanuelschapel.com` (Squarespace); create `owner@`; test both
+   directions; copy over the old mailbox if history is wanted.
+2. Squarespace DNS: remove the parking/site connection; apex `A` → Netlify LB, `www` `CNAME`
+   → `emanuelchapelrebrand.netlify.app`; keep the Google MX/SPF/DKIM/DMARC records.
+3. Netlify: primary `www.emanuelschapel.com`, alias `emanuelschapel.com`; wait for TLS; keep
+   the fh domains as aliases during the overlap. **DNS must resolve to Netlify before the
+   rebuild** (see §3, indexing flip).
+4. Sanity CORS: add `https://www.emanuelschapel.com` and `https://emanuelschapel.com`.
+5. Redeploy. Verify with `URL=https://www.emanuelschapel.com npm run build`.
+6. New Google Search Console property + new verification file: `public/googlea67b9d453a067c5b.html`
+   is tied to the fh property and must be replaced.
+7. Keep fh + its mailbox alive 30–60 days, then cancel GoDaddy. After that the fh redirect
+   rules in `netlify.toml` are dead code.
+
+---
+
 ## 1. Goal
 
 Ship the Emanuel's Chapel Funeral Home site on its production domain.
