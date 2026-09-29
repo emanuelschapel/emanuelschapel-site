@@ -27,7 +27,7 @@ export const PACKAGES: ServicePackage[] = [
     id: 'silver',
     name: 'Silver',
     tagline: 'Economical option — complete, nothing missing',
-    price: 5500,
+    price: 6500,
     recommended: true,
     includes: [
       'Hearse',
@@ -44,7 +44,7 @@ export const PACKAGES: ServicePackage[] = [
     id: 'gold',
     name: 'Gold',
     tagline: 'Added flowers and programs',
-    price: 8000,
+    price: 7500,
     adds: [
       '200 colored programs (instead of 100)',
       '3-piece carnation flower set, colors of your choice',
