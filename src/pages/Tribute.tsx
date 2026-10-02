@@ -3,10 +3,12 @@ import { ArrowLeft, Calendar, MapPin, Video, Clock } from 'lucide-react';
 import { PortableText } from '@portabletext/react';
 import CTASection from '../components/sections/CTASection';
 import { PHONE, PHONE_HREF } from '../data/navigation';
-import { fetchObituary, imageUrl, lifeDates, longDate, serviceWhen, livestreamHref, sanityConfigured, MEMORIAL_IMAGE } from '../lib/sanity';
+import { fetchObituary, imageUrl, lifeDates, longDate, serviceWhen, addressLines, livestreamHref, sanityConfigured, MEMORIAL_IMAGE } from '../lib/sanity';
 import { useRemote } from '../lib/useSanity';
 import { useSeo, SITE_URL } from '../lib/seo';
 import { buildTributeSeo } from '../lib/tributeSeo';
+
+const DETAIL_LABEL = 'font-body text-[11px] tracking-[0.2em] uppercase text-muted mb-1';
 
 /**
  * /obituaries/:slug — one person's tribute page.
@@ -105,7 +107,7 @@ export default function Tribute() {
       </section>
 
       <section className="py-16 px-6">
-        <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-[1fr_minmax(0,20rem)] gap-14">
+        <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-[1fr_minmax(0,23rem)] gap-14">
           {/* The family's words */}
           <article>
             {o.body && o.body.length > 0 ? (
@@ -119,26 +121,44 @@ export default function Tribute() {
 
           {/* Service details */}
           <aside className="lg:sticky lg:top-32 self-start">
-            <div className="bg-white border border-rule rounded-sm p-7 shadow-sm">
-              <h2 className="font-display text-xl text-ink mb-5">Service Details</h2>
+            <div className="bg-white border border-rule rounded-sm p-8 shadow-sm">
+              <h2 className="font-display text-xl text-ink mb-6">Service Details</h2>
               {hasService ? (
-                <dl className="space-y-4">
+                <dl className="space-y-6">
                   {when && (
-                    <div className="flex items-start gap-3">
-                      <Calendar size={16} className="text-ink mt-0.5 flex-shrink-0" aria-hidden="true" />
-                      <div><dt className="sr-only">When</dt><dd className="font-body text-sm text-ink">{when}</dd></div>
+                    <div className="flex items-start gap-3.5">
+                      <Calendar size={16} className="text-ink mt-[1.4rem] flex-shrink-0" aria-hidden="true" />
+                      <div>
+                        <dt className={DETAIL_LABEL}>Service</dt>
+                        <dd className="font-body text-[15px] text-ink leading-relaxed">
+                          <span className="block">{when.day}</span>
+                          <span className="block whitespace-nowrap">{when.time}</span>
+                        </dd>
+                      </div>
                     </div>
                   )}
                   {o.serviceLocation && (
-                    <div className="flex items-start gap-3">
-                      <MapPin size={16} className="text-ink mt-0.5 flex-shrink-0" aria-hidden="true" />
-                      <div><dt className="sr-only">Where</dt><dd className="font-body text-sm text-ink">{o.serviceLocation}</dd></div>
+                    <div className="flex items-start gap-3.5">
+                      <MapPin size={16} className="text-ink mt-[1.4rem] flex-shrink-0" aria-hidden="true" />
+                      <div>
+                        <dt className={DETAIL_LABEL}>Location</dt>
+                        <dd className="font-body text-[15px] text-ink leading-relaxed">
+                          <address className="not-italic">
+                            {addressLines(o.serviceLocation).map((line, i) =>
+                              <span key={i} className={line ? 'block' : 'block h-3'}>{line}</span>)}
+                          </address>
+                        </dd>
+                      </div>
                     </div>
                   )}
                   {o.visitation && (
-                    <div className="flex items-start gap-3">
-                      <Clock size={16} className="text-ink mt-0.5 flex-shrink-0" aria-hidden="true" />
-                      <div><dt className="sr-only">Visitation</dt><dd className="font-body text-sm text-ink">{o.visitation}</dd></div>
+                    <div className="flex items-start gap-3.5">
+                      <Clock size={16} className="text-ink mt-[1.4rem] flex-shrink-0" aria-hidden="true" />
+                      <div>
+                        <dt className={DETAIL_LABEL}>Visitation</dt>
+                        {/* The label is shown now, so drop a "Visitation:" the editor typed too. */}
+                        <dd className="font-body text-[15px] text-ink leading-relaxed">{o.visitation.replace(/^\s*visitation\s*:\s*/i, '')}</dd>
+                      </div>
                     </div>
                   )}
                 </dl>

@@ -125,9 +125,8 @@ const DATE = new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', 
 const YEAR = new Intl.DateTimeFormat('en-US', { year: 'numeric', timeZone: 'UTC' });
 // Service times are real instants, entered in the Studio in Chicago time. Pinning the zone
 // shows a family out of state the chapel's clock, not their own.
-const DATETIME = new Intl.DateTimeFormat('en-US', {
-  weekday: 'long', month: 'long', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit',
-  timeZone: 'America/Chicago',
+const DAY = new Intl.DateTimeFormat('en-US', {
+  weekday: 'long', month: 'long', day: 'numeric', year: 'numeric', timeZone: 'America/Chicago',
 });
 const TIME = new Intl.DateTimeFormat('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'America/Chicago' });
 
@@ -148,9 +147,43 @@ export function longDate(iso: string): string {
   return DATE.format(new Date(iso));
 }
 
-/** "Friday, May 29, 2026, 11:00 AM – 12:00 PM" */
-export function serviceWhen(o: Pick<ObituarySummary, 'serviceDate' | 'serviceEnd'>): string | undefined {
+/**
+ * `{ day: "Saturday, October 3, 2026", time: "10:00 AM – 12:00 PM" }` — two lines, so the
+ * time never wraps mid-range in a narrow column.
+ */
+export function serviceWhen(
+  o: Pick<ObituarySummary, 'serviceDate' | 'serviceEnd'>,
+): { day: string; time: string } | undefined {
   if (!o.serviceDate) return undefined;
-  const start = DATETIME.format(new Date(o.serviceDate));
-  return o.serviceEnd ? `${start} – ${TIME.format(new Date(o.serviceEnd))}` : start;
+  const start = new Date(o.serviceDate);
+  const time = TIME.format(start);
+  return {
+    day: DAY.format(start),
+    time: o.serviceEnd ? `${time} – ${TIME.format(new Date(o.serviceEnd))}` : time,
+  };
+}
+
+/**
+ * The location as address lines. Line breaks typed in the Studio win. Older entries are one
+ * comma-separated string ("Emanuel's Chapel, 5112 S. Western Ave, Alsip, IL 60803"), so
+ * split on commas — but keep "Alsip, IL 60803" together, since a lone "IL 60803" line reads
+ * as broken. A blank line in the Studio (between the chapel and the cemetery, say) comes
+ * back as '' so the caller can leave a gap.
+ */
+export function addressLines(location: string): string[] {
+  const multiline = location.includes('\n');
+  const parts = multiline ? location.split('\n') : location.split(',');
+  const lines: string[] = [];
+  for (const raw of parts) {
+    const part = raw.trim().replace(/\s{2,}/g, ' ');
+    if (!part) {
+      if (multiline && lines.length && lines[lines.length - 1] !== '') lines.push('');
+      continue;
+    }
+    const prev = lines.length - 1;
+    if (prev >= 0 && lines[prev] && /^[A-Z]{2}\.?\s*\d{5}(-\d{4})?$/.test(part)) lines[prev] += `, ${part}`;
+    else lines.push(part);
+  }
+  if (lines[lines.length - 1] === '') lines.pop();
+  return lines;
 }

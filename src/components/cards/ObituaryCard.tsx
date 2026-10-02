@@ -1,6 +1,6 @@
 import { Calendar, MapPin, Video } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { imageUrl, lifespan, serviceWhen, livestreamHref, MEMORIAL_IMAGE, MEMORIAL_IMAGE_FOCAL, type ObituarySummary } from '../../lib/sanity';
+import { imageUrl, lifespan, serviceWhen, addressLines, livestreamHref, MEMORIAL_IMAGE, MEMORIAL_IMAGE_FOCAL, type ObituarySummary } from '../../lib/sanity';
 
 interface ObituaryCardProps {
   obituary: ObituarySummary;
@@ -35,17 +35,23 @@ export default function ObituaryCard({ obituary }: ObituaryCardProps) {
         <p className="font-body text-sm text-ink leading-relaxed mb-5 flex-1">{obituary.shortBio}</p>
 
         {(when || obituary.serviceLocation) && (
-          <div className="space-y-2 mb-5 pb-5 border-b border-gray-100">
+          <div className="space-y-3 mb-5 pb-5 border-b border-gray-100">
             {when && (
-              <div className="flex items-start gap-2">
+              <div className="flex items-start gap-2.5">
                 <Calendar size={13} className="text-ink mt-0.5 flex-shrink-0" aria-hidden="true" />
-                <span className="font-body text-xs text-ink">{when}</span>
+                <span className="font-body text-[13px] text-ink leading-relaxed">
+                  <span className="block">{when.day}</span>
+                  <span className="block whitespace-nowrap">{when.time}</span>
+                </span>
               </div>
             )}
             {obituary.serviceLocation && (
-              <div className="flex items-start gap-2">
+              <div className="flex items-start gap-2.5">
                 <MapPin size={13} className="text-ink mt-0.5 flex-shrink-0" aria-hidden="true" />
-                <span className="font-body text-xs text-ink">{obituary.serviceLocation}</span>
+                <address className="font-body text-[13px] text-ink leading-relaxed not-italic">
+                  {addressLines(obituary.serviceLocation).map((line, i) =>
+                    <span key={i} className={line ? 'block' : 'block h-2'}>{line}</span>)}
+                </address>
               </div>
             )}
           </div>

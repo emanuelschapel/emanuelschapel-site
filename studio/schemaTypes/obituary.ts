@@ -94,9 +94,12 @@ export default defineType({
     defineField({
       name: 'serviceLocation',
       title: 'Service location',
-      type: 'string',
+      // `text`, not `string`, so each address line can go on its own line. Same stored
+      // value type, so existing one-line entries keep working (the site splits on commas).
+      type: 'text',
+      rows: 4,
       group: 'service',
-      description: "E.g. Emanuel's Chapel, Main Chapel — or the name and address of another venue.",
+      description: "One part per line, like an envelope — e.g. Emanuel's Chapel / 5112 S. Western Ave. / Chicago, IL 60609. Add a second place (such as the cemetery) underneath.",
     }),
     defineField({
       name: 'visitation',
