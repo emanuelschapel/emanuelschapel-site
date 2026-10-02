@@ -118,12 +118,18 @@ export async function fetchObituary(slug: string): Promise<Obituary | null> {
 
 // ----------------------------------------------------------------------------------------
 
-const DATE = new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-const YEAR = new Intl.DateTimeFormat('en-US', { year: 'numeric' });
+// Birth and passing are Sanity `date` fields: a bare "2026-09-23" with no time. `new Date()`
+// reads that as midnight UTC, which in Chicago is still the evening of the 22nd — so every
+// date printed a day early. Formatting those in UTC keeps the calendar day as entered.
+const DATE = new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' });
+const YEAR = new Intl.DateTimeFormat('en-US', { year: 'numeric', timeZone: 'UTC' });
+// Service times are real instants, entered in the Studio in Chicago time. Pinning the zone
+// shows a family out of state the chapel's clock, not their own.
 const DATETIME = new Intl.DateTimeFormat('en-US', {
   weekday: 'long', month: 'long', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit',
+  timeZone: 'America/Chicago',
 });
-const TIME = new Intl.DateTimeFormat('en-US', { hour: 'numeric', minute: '2-digit' });
+const TIME = new Intl.DateTimeFormat('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'America/Chicago' });
 
 /** "1948 – 2026" for the card; falls back gracefully when birth is unknown. */
 export function lifespan(o: Pick<ObituarySummary, 'dateOfBirth' | 'dateOfPassing'>): string {
@@ -131,6 +137,13 @@ export function lifespan(o: Pick<ObituarySummary, 'dateOfBirth' | 'dateOfPassing
   return o.dateOfBirth ? `${YEAR.format(new Date(o.dateOfBirth))} – ${passing}` : passing;
 }
 
+/** "September 3, 1964 – September 23, 2026" for the tribute page header. */
+export function lifeDates(o: Pick<ObituarySummary, 'dateOfBirth' | 'dateOfPassing'>): string {
+  const passing = longDate(o.dateOfPassing);
+  return o.dateOfBirth ? `${longDate(o.dateOfBirth)} – ${passing}` : `Passed ${passing}`;
+}
+
+/** For Sanity `date` fields only (birth, passing) — see the note on DATE above. */
 export function longDate(iso: string): string {
   return DATE.format(new Date(iso));
 }

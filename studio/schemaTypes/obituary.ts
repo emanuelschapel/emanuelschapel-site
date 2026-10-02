@@ -64,7 +64,9 @@ export default defineType({
       group: 'person',
       rows: 3,
       description: 'One or two sentences. Shown on the obituary card and at the top of the tribute page.',
-      validation: r => r.required().max(320),
+      // `required()` alone accepts a lone space, which published a blank tribute header.
+      validation: r =>
+        r.required().max(320).custom(v => (v ?? '').trim() ? true : 'Write a sentence or two about them.'),
     }),
     defineField({
       name: 'body',

@@ -3,7 +3,7 @@ import { ArrowLeft, Calendar, MapPin, Video, Clock } from 'lucide-react';
 import { PortableText } from '@portabletext/react';
 import CTASection from '../components/sections/CTASection';
 import { PHONE, PHONE_HREF } from '../data/navigation';
-import { fetchObituary, imageUrl, lifespan, longDate, serviceWhen, livestreamHref, sanityConfigured, MEMORIAL_IMAGE } from '../lib/sanity';
+import { fetchObituary, imageUrl, lifeDates, longDate, serviceWhen, livestreamHref, sanityConfigured, MEMORIAL_IMAGE } from '../lib/sanity';
 import { useRemote } from '../lib/useSanity';
 import { useSeo, SITE_URL } from '../lib/seo';
 import { buildTributeSeo } from '../lib/tributeSeo';
@@ -97,7 +97,7 @@ export default function Tribute() {
                 <span className="text-pink text-xs tracking-[0.4em] font-body uppercase">In Loving Memory</span>
               </div>
               <h1 className="font-display text-4xl md:text-5xl leading-[1.1] mb-3">{o.name}</h1>
-              <p className="font-heading text-pink text-xl italic mb-6">{lifespan(o)}</p>
+              <p className="font-heading text-pink text-xl italic mb-6">{lifeDates(o)}</p>
               <p className="font-body text-white/80 text-[17px] leading-relaxed max-w-[52ch]">{o.shortBio}</p>
             </div>
           </div>
